@@ -13,7 +13,7 @@ const _barlow = Barlow({ weight: ["700", "600"], subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Eccentric Essays - Professional Essay Writing Service",
   description: "Get expert essay writing services. Quality essays delivered on time. Order now!",
-  generator: "me",
+  generator: "v0.app",
 }
 
 export default function RootLayout({

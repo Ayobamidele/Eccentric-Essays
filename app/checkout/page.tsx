@@ -33,6 +33,10 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("paystack")
   const [agreedToTerms, setAgreedToTerms] = useState(false)
 
+  const [discountCode, setDiscountCode] = useState("")
+  const [discountPercentage, setDiscountPercentage] = useState(0)
+  const [discountError, setDiscountError] = useState("")
+
   useEffect(() => {
     const service = searchParams.get("service") || "Essay Writing"
     const level = searchParams.get("level") || "BA/BSC"
@@ -78,6 +82,13 @@ export default function CheckoutPage() {
 
   const paperFormats = ["Chicago", "Harvard", "APA", "Vancouver", "MLA", "Oscola", "Turabian", "Other"]
 
+  const validDiscountCodes: { [key: string]: number } = {
+    SAVE10: 10,
+    SAVE20: 20,
+    WELCOME15: 15,
+    STUDENT25: 25,
+  }
+
   const wordCountMap: { [key: number]: number } = {
     1: 250,
     2: 500,
@@ -106,6 +117,32 @@ export default function CheckoutPage() {
     return (level?.price || 20.5) * pages
   }
 
+  const applyDiscountCode = () => {
+    const code = discountCode.toUpperCase().trim()
+    if (!code) {
+      setDiscountError("Please enter a discount code")
+      return
+    }
+
+    if (validDiscountCodes[code]) {
+      setDiscountPercentage(validDiscountCodes[code])
+      setDiscountError("")
+    } else {
+      setDiscountError("Invalid discount code")
+      setDiscountPercentage(0)
+    }
+  }
+
+  const clearDiscount = () => {
+    setDiscountCode("")
+    setDiscountPercentage(0)
+    setDiscountError("")
+  }
+
+  const subtotal = getCurrentPrice()
+  const discountAmount = (subtotal * discountPercentage) / 100
+  const total = subtotal - discountAmount
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -130,7 +167,7 @@ export default function CheckoutPage() {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Link href="/" className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4">
+          <Link href="/" className="flex items-center gap-2 text-red-600 hover:text-red-700 mb-4">
             <ChevronLeft size={20} />
             Back to Home
           </Link>
@@ -145,11 +182,11 @@ export default function CheckoutPage() {
             <Card className="p-8 bg-white border-gray-200">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">1. Account Details</h2>
-                <button className="text-blue-600 hover:text-blue-700 text-sm font-semibold">Change</button>
+                <button className="text-red-600 hover:text-red-700 text-sm font-semibold">Change</button>
               </div>
 
               {/* Returning Customer Option */}
-              <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="mb-6 p-4 bg-red-50 rounded-lg border border-red-200">
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
                     type="checkbox"
@@ -165,7 +202,7 @@ export default function CheckoutPage() {
                     value={accountEmail}
                     onChange={(e) => setAccountEmail(e.target.value)}
                     placeholder="Enter your account email"
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 mt-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2 mt-3 focus:outline-none focus:ring-2 focus:ring-red-600"
                   />
                 )}
               </div>
@@ -179,7 +216,7 @@ export default function CheckoutPage() {
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder="Enter your first name"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
                     />
                   </div>
                   <div>
@@ -189,7 +226,7 @@ export default function CheckoutPage() {
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
                       placeholder="Enter your last name"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
                     />
                   </div>
                   <div>
@@ -199,7 +236,7 @@ export default function CheckoutPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
                     />
                   </div>
                   <div>
@@ -209,7 +246,7 @@ export default function CheckoutPage() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="Enter your phone number"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
                     />
                   </div>
                 </div>
@@ -234,8 +271,8 @@ export default function CheckoutPage() {
                       }}
                       className={`px-6 py-2 rounded-full font-semibold transition-all ${
                         paperFormat === format
-                          ? "bg-blue-500 text-white"
-                          : "bg-white border-2 border-gray-300 text-gray-700 hover:border-blue-500"
+                          ? "bg-red-500 text-white"
+                          : "bg-white border-2 border-gray-300 text-gray-700 hover:border-red-500"
                       }`}
                     >
                       {format}
@@ -248,7 +285,7 @@ export default function CheckoutPage() {
                     value={customFormat}
                     onChange={(e) => setCustomFormat(e.target.value)}
                     placeholder="Enter your paper format"
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 mt-4 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 mt-4 focus:outline-none focus:ring-2 focus:ring-red-600"
                   />
                 )}
               </div>
@@ -263,7 +300,7 @@ export default function CheckoutPage() {
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder="Enter your subject"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
                 />
               </div>
 
@@ -277,7 +314,7 @@ export default function CheckoutPage() {
                   value={topics}
                   onChange={(e) => setTopics(e.target.value)}
                   placeholder="Enter topic name"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
                 />
               </div>
 
@@ -291,7 +328,7 @@ export default function CheckoutPage() {
                   onChange={(e) => setAdditionalInfo(e.target.value)}
                   placeholder="Enter any additional information"
                   rows={6}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
                 />
               </div>
 
@@ -300,7 +337,7 @@ export default function CheckoutPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Upload only txt, image, pdf, docx, doc file
                 </label>
-                <label className="flex items-center gap-3 p-4 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                <label className="flex items-center gap-3 p-4 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-red-500 transition-colors">
                   <Upload size={20} className="text-gray-400" />
                   <div>
                     <span className="font-semibold text-gray-700">Browse...</span>
@@ -322,8 +359,8 @@ export default function CheckoutPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-6">3. Payment Method</h2>
               <div className="space-y-4">
                 <label
-                  className="flex items-center gap-3 p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors"
-                  style={{ borderColor: paymentMethod === "paystack" ? "#0052CC" : undefined }}
+                  className="flex items-center gap-3 p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-red-500 transition-colors"
+                  style={{ borderColor: paymentMethod === "paystack" ? "#DC2626" : undefined }}
                 >
                   <input
                     type="radio"
@@ -339,8 +376,8 @@ export default function CheckoutPage() {
                   </div>
                 </label>
                 <label
-                  className="flex items-center gap-3 p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors"
-                  style={{ borderColor: paymentMethod === "stripe" ? "#0052CC" : undefined }}
+                  className="flex items-center gap-3 p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-red-500 transition-colors"
+                  style={{ borderColor: paymentMethod === "stripe" ? "#DC2626" : undefined }}
                 >
                   <input
                     type="radio"
@@ -358,7 +395,7 @@ export default function CheckoutPage() {
               </div>
             </Card>
 
-            <Card className="p-6 bg-blue-50 border border-blue-200">
+            <Card className="p-6 bg-red-50 border border-red-200">
               <p className="text-gray-800 mb-4 leading-relaxed">
                 Your personal data will be used to process your order, support your experience throughout this website,
                 and for other purposes described in our privacy policy.
@@ -370,9 +407,9 @@ export default function CheckoutPage() {
                   onChange={(e) => setAgreedToTerms(e.target.checked)}
                   className="w-4 h-4 mt-1 rounded"
                 />
-                <span className="text-blue-600">
+                <span className="text-red-600">
                   I have read and agree to the website{" "}
-                  <Link href="/terms" className="underline hover:text-blue-700 font-semibold">
+                  <Link href="/terms" className="underline hover:text-red-700 font-semibold">
                     terms and conditions
                   </Link>
                   <span className="text-red-500 ml-1">*</span>
@@ -382,7 +419,7 @@ export default function CheckoutPage() {
                 disabled={!agreedToTerms}
                 className={`w-full py-3 text-lg font-semibold transition-all ${
                   agreedToTerms
-                    ? "bg-blue-600 hover:bg-blue-700 text-white"
+                    ? "bg-red-600 hover:bg-red-700 text-white"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
               >
@@ -424,24 +461,58 @@ export default function CheckoutPage() {
                   </span>
                 </div>
               </div>
+
+              <div className="border-t pt-4 mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Discount Code</label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={discountCode}
+                    onChange={(e) => setDiscountCode(e.target.value)}
+                    placeholder="Enter discount code"
+                    className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-600"
+                  />
+                  <button
+                    onClick={applyDiscountCode}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold text-sm hover:bg-red-700 transition-colors"
+                  >
+                    Apply
+                  </button>
+                </div>
+                {discountError && <p className="text-red-600 text-xs mb-2">{discountError}</p>}
+                {discountPercentage > 0 && (
+                  <div className="flex justify-between items-center text-sm bg-green-50 p-2 rounded border border-green-200 mb-2">
+                    <span className="text-green-700 font-semibold">{discountPercentage}% discount applied</span>
+                    <button
+                      onClick={clearDiscount}
+                      className="text-green-600 hover:text-green-700 text-xs font-semibold"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div className="border-t pt-4 space-y-2">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Sub Total:</span>
-                  <span className="font-semibold">£{getCurrentPrice().toFixed(2)}</span>
+                  <span className="font-semibold">£{subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Discount:</span>
-                  <span className="font-semibold">£0.00</span>
-                </div>
+                {discountPercentage > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Discount ({discountPercentage}%):</span>
+                    <span className="font-semibold">-£{discountAmount.toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax:</span>
                   <span className="font-semibold">£0.00</span>
                 </div>
               </div>
               <div className="border-t pt-4 mt-4">
-                <div className="flex justify-between text-lg font-bold text-blue-600">
+                <div className="flex justify-between text-lg font-bold text-red-600">
                   <span>Total:</span>
-                  <span>£{getCurrentPrice().toFixed(2)}</span>
+                  <span>£{total.toFixed(2)}</span>
                 </div>
               </div>
             </Card>

@@ -101,7 +101,7 @@ export default function OrderPage() {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Link href="/" className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4">
+          <Link href="/" className="flex items-center gap-2 text-red-600 hover:text-red-700 mb-4">
             <ChevronLeft size={20} />
             Back to Home
           </Link>
@@ -115,7 +115,7 @@ export default function OrderPage() {
           <button
             onClick={() => setActiveTab("new")}
             className={`px-6 py-3 font-semibold transition-colors ${
-              activeTab === "new" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600 hover:text-gray-900"
+              activeTab === "new" ? "text-red-600 border-b-2 border-red-600" : "text-gray-600 hover:text-gray-900"
             }`}
           >
             <Plus className="inline mr-2" size={20} />
@@ -124,9 +124,7 @@ export default function OrderPage() {
           <button
             onClick={() => setActiveTab("existing")}
             className={`px-6 py-3 font-semibold transition-colors ${
-              activeTab === "existing"
-                ? "text-blue-600 border-b-2 border-blue-600"
-                : "text-gray-600 hover:text-gray-900"
+              activeTab === "existing" ? "text-red-600 border-b-2 border-red-600" : "text-gray-600 hover:text-gray-900"
             }`}
           >
             <Edit3 className="inline mr-2" size={20} />
@@ -147,7 +145,7 @@ export default function OrderPage() {
                     <select
                       value={selectedService}
                       onChange={(e) => setSelectedService(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
                     >
                       {services.map((service) => (
                         <option key={service} value={service}>
@@ -162,7 +160,7 @@ export default function OrderPage() {
                     <select
                       value={selectedLevel}
                       onChange={(e) => setSelectedLevel(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
                     >
                       {academicLevels.map((level) => (
                         <option key={level.label} value={level.label}>
@@ -177,7 +175,7 @@ export default function OrderPage() {
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => setPages(Math.max(1, pages - 1))}
-                        className="bg-blue-600 text-white w-10 h-10 rounded-lg hover:bg-blue-700 flex items-center justify-center"
+                        className="bg-red-600 text-white w-10 h-10 rounded-lg hover:bg-red-700 flex items-center justify-center"
                       >
                         <Minus size={20} />
                       </button>
@@ -189,7 +187,7 @@ export default function OrderPage() {
                       />
                       <button
                         onClick={() => setPages(pages + 1)}
-                        className="bg-blue-600 text-white w-10 h-10 rounded-lg hover:bg-blue-700 flex items-center justify-center"
+                        className="bg-red-600 text-white w-10 h-10 rounded-lg hover:bg-red-700 flex items-center justify-center"
                       >
                         <Plus size={20} />
                       </button>
@@ -207,7 +205,7 @@ export default function OrderPage() {
                         type="date"
                         value={selectedDate}
                         onChange={(e) => setSelectedDate(e.target.value)}
-                        className="w-full border border-gray-300 rounded-lg px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="w-full border border-gray-300 rounded-lg px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-red-600"
                       />
                     </div>
                   </div>
@@ -217,9 +215,9 @@ export default function OrderPage() {
                       <span className="text-gray-600">
                         £{(academicLevels.find((l) => l.label === selectedLevel)?.price || 20.5).toFixed(2)} per page
                       </span>
-                      <span className="text-3xl font-bold text-blue-600">£{getCurrentPrice().toFixed(2)}</span>
+                      <span className="text-3xl font-bold text-red-600">£{getCurrentPrice().toFixed(2)}</span>
                     </div>
-                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg">
+                    <Button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg">
                       Proceed to Payment
                     </Button>
                   </div>
@@ -262,7 +260,7 @@ export default function OrderPage() {
                     <span className="text-gray-600">Tax:</span>
                     <span className="font-semibold">£0.00</span>
                   </div>
-                  <div className="flex justify-between text-lg font-bold text-blue-600 border-t pt-4">
+                  <div className="flex justify-between text-lg font-bold text-red-600 border-t pt-4">
                     <span>Total:</span>
                     <span>£{getCurrentPrice().toFixed(2)}</span>
                   </div>
@@ -278,7 +276,7 @@ export default function OrderPage() {
             {existingOrders.length === 0 ? (
               <Card className="p-12 bg-white border-gray-200 text-center">
                 <p className="text-gray-600 mb-4">No existing orders found.</p>
-                <Button onClick={() => setActiveTab("new")} className="bg-blue-600 hover:bg-blue-700 text-white">
+                <Button onClick={() => setActiveTab("new")} className="bg-red-600 hover:bg-red-700 text-white">
                   Create New Order
                 </Button>
               </Card>
@@ -308,10 +306,10 @@ export default function OrderPage() {
                       <div className="flex items-end gap-2">
                         <div className="text-right flex-1">
                           <p className="text-sm text-gray-600">Price</p>
-                          <p className="text-2xl font-bold text-blue-600">£{order.price.toFixed(2)}</p>
+                          <p className="text-2xl font-bold text-red-600">£{order.price.toFixed(2)}</p>
                         </div>
                         <div className="flex gap-2">
-                          <Button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2">Pay Now</Button>
+                          <Button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2">Pay Now</Button>
                           <button
                             onClick={() => deleteOrder(order.id)}
                             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"

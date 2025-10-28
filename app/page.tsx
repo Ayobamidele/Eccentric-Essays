@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import {
   ChevronLeft,
   ChevronRight,
@@ -35,6 +35,27 @@ export default function Home() {
   const [selectedLevel, setSelectedLevel] = useState("BA/BSC")
   const [pages, setPages] = useState(1)
   const [selectedDate, setSelectedDate] = useState("")
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+
+      // Check if user scrolled down
+      if (currentScrollY > lastScrollY) {
+        // Advance carousel every 300px scrolled
+        if (currentScrollY - lastScrollY > 300) {
+          setServicesIndex((prev) => (prev + 1) % services.length)
+          setLastScrollY(currentScrollY)
+        }
+      }
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [lastScrollY])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -259,7 +280,7 @@ export default function Home() {
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore",
       icon: Edit3,
-      color: "from-blue-400 to-blue-500",
+      color: "from-red-500 to-red-600",
     },
     {
       number: 2,
@@ -267,7 +288,7 @@ export default function Home() {
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore",
       icon: CreditCard,
-      color: "from-purple-400 to-purple-500",
+      color: "from-red-500 to-red-600",
     },
     {
       number: 3,
@@ -275,7 +296,7 @@ export default function Home() {
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore",
       icon: Download,
-      color: "from-green-400 to-green-500",
+      color: "from-red-500 to-red-600",
     },
   ]
 
@@ -319,26 +340,26 @@ export default function Home() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
               <a href="/" className="hover:opacity-80 transition">
-                <img src="/eccentric-essays-logo.png" alt="Eccentric Essays" className="h-24 w-auto" />
+                <img src="/eccentric-essays-logo.png" alt="Eccentric Essays" className="h-12 w-auto" />
               </a>
             </div>
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#home" className="text-gray-700 hover:text-blue-600 transition">
+              <a href="#home" className="text-gray-700 hover:text-red-600 transition">
                 Home
               </a>
-              <a href="#services" className="text-gray-700 hover:text-blue-600 transition">
+              <a href="#services" className="text-gray-700 hover:text-red-600 transition">
                 Services
               </a>
-              <a href="#contact" className="text-gray-700 hover:text-blue-600 transition">
+              <a href="#contact" className="text-gray-700 hover:text-red-600 transition">
                 Contact Us
               </a>
               <div className="flex items-center gap-4">
-                <a href="/auth" className="text-gray-700 hover:text-blue-600 transition font-medium">
+                <a href="/auth" className="text-gray-700 hover:text-red-600 transition font-medium">
                   Sign In
                 </a>
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                <Button className="bg-red-600 hover:bg-red-700 text-white">
                   <a href="/auth" className="no-underline">
                     Sign Up
                   </a>
@@ -355,19 +376,19 @@ export default function Home() {
           {/* Mobile Menu */}
           {mobileMenuOpen && (
             <div className="md:hidden pb-4 space-y-2">
-              <a href="#home" className="block text-gray-700 hover:text-blue-600 py-2">
+              <a href="#home" className="block text-gray-700 hover:text-red-600 py-2">
                 Home
               </a>
-              <a href="#services" className="block text-gray-700 hover:text-blue-600 py-2">
+              <a href="#services" className="block text-gray-700 hover:text-red-600 py-2">
                 Services
               </a>
-              <a href="#contact" className="block text-gray-700 hover:text-blue-600 py-2">
+              <a href="#contact" className="block text-gray-700 hover:text-red-600 py-2">
                 Contact Us
               </a>
-              <a href="/auth" className="block text-gray-700 hover:text-blue-600 py-2">
+              <a href="/auth" className="block text-gray-700 hover:text-red-600 py-2">
                 Sign In
               </a>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+              <Button className="w-full bg-red-600 hover:bg-red-700 text-white">
                 <a href="/auth" className="no-underline">
                   Sign Up
                 </a>
@@ -380,7 +401,7 @@ export default function Home() {
       {/* Hero Section */}
       <section
         id="home"
-        className="relative bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 text-white py-20 md:py-32 overflow-hidden"
+        className="relative bg-gradient-to-br from-red-600 via-red-500 to-red-700 text-white py-20 md:py-32 overflow-hidden"
       >
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 right-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
@@ -390,159 +411,126 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-block bg-blue-400/30 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <div className="inline-block bg-red-400/30 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
                 <span className="text-sm font-semibold">✨ Save 15% Use ECCENTRIC code</span>
               </div>
               <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-balance">
-                Essay Writing Service as Experts
+                Stop the Stress. Start the Success. ✨
               </h1>
-              <p className="text-xl text-blue-100 mb-8 text-balance">• You want quality and that's what we deliver.</p>
-              <Button className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8 py-6">
+              <p className="text-xl text-red-100 mb-4 text-balance">
+                Imagine handing in every assignment with total confidence. That's the power of having Eccentric Essays
+                on your team.
+              </p>
+              <p className="text-lg text-red-100 mb-8 text-balance">
+                That midnight panic, the blank screen stare, the fear of a looming deadline... It ends now.
+              </p>
+              <Button className="bg-white text-red-600 hover:bg-gray-100 text-lg px-8 py-6">
                 <a href="/auth" className="no-underline">
                   Get Started
                 </a>
               </Button>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 shadow-2xl text-gray-900">
-              <h3 className="text-2xl font-bold mb-6">Calculate the price of your order:</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Service Type</label>
-                  <select
-                    value={selectedService}
-                    onChange={(e) => setSelectedService(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  >
-                    <option>Essay Writing</option>
-                    <option>Thesis Writing</option>
-                    <option>Dissertation Writing</option>
-                    <option>Research Proposal</option>
-                    <option>Literature Review Writing</option>
-                    <option>Data Analysis</option>
-                    <option>Statistics Presentation</option>
-                    <option>Dissertation Supervisor</option>
-                    <option>Assignment Help</option>
-                    <option>Business Plans</option>
-                    <option>Academic Posters</option>
-                    <option>Articles</option>
-                    <option>Case Study</option>
-                    <option>Custom Coursework Writing</option>
-                    <option>Reports</option>
-                    <option>Proofreading and Editing</option>
-                    <option>Dissertation Results</option>
-                    <option>Dissertation Methodology</option>
-                    <option>Dissertation Introduction</option>
-                    <option>Dissertation Findings</option>
-                    <option>Dissertation Data Analysis</option>
-                    <option>Dissertation Conclusion</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Academic Level</label>
-                  <select
-                    value={selectedLevel}
-                    onChange={(e) => setSelectedLevel(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  >
-                    {academicLevels.map((level) => (
-                      <option key={level.label} value={level.label}>
-                        {level.label} - £{level.price.toFixed(2)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Number of pages</label>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => setPages(Math.max(1, pages - 1))}
-                      className="bg-blue-600 text-white w-10 h-10 rounded-lg hover:bg-blue-700"
+            <div className="flex justify-center">
+              <div className="bg-white rounded-2xl p-8 shadow-2xl text-gray-900 w-full max-w-md">
+                <h3 className="text-2xl font-bold mb-6">Calculate the price of your order:</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Service Type</label>
+                    <select
+                      value={selectedService}
+                      onChange={(e) => setSelectedService(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
                     >
-                      −
-                    </button>
-                    <input
-                      type="number"
-                      value={pages}
-                      onChange={(e) => setPages(Math.max(1, Number.parseInt(e.target.value) || 1))}
-                      className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-center"
-                    />
-                    <button
-                      onClick={() => setPages(pages + 1)}
-                      className="bg-blue-600 text-white w-10 h-10 rounded-lg hover:bg-blue-700"
+                      <option>Essay Writing</option>
+                      <option>Thesis Writing</option>
+                      <option>Dissertation Writing</option>
+                      <option>Research Proposal</option>
+                      <option>Literature Review Writing</option>
+                      <option>Data Analysis</option>
+                      <option>Statistics Presentation</option>
+                      <option>Dissertation Supervisor</option>
+                      <option>Assignment Help</option>
+                      <option>Business Plans</option>
+                      <option>Academic Posters</option>
+                      <option>Articles</option>
+                      <option>Case Study</option>
+                      <option>Custom Coursework Writing</option>
+                      <option>Reports</option>
+                      <option>Proofreading and Editing</option>
+                      <option>Dissertation Results</option>
+                      <option>Dissertation Methodology</option>
+                      <option>Dissertation Introduction</option>
+                      <option>Dissertation Findings</option>
+                      <option>Dissertation Data Analysis</option>
+                      <option>Dissertation Conclusion</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Academic Level</label>
+                    <select
+                      value={selectedLevel}
+                      onChange={(e) => setSelectedLevel(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
                     >
-                      +
-                    </button>
+                      {academicLevels.map((level) => (
+                        <option key={level.label} value={level.label}>
+                          {level.label} - £{level.price.toFixed(2)}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">{wordCountMap[pages] || 250} words</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Deadline</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-3.5 text-gray-400" size={20} />
-                    <input
-                      type="date"
-                      value={selectedDate}
-                      onChange={(e) => setSelectedDate(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    />
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Number of pages</label>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => setPages(Math.max(1, pages - 1))}
+                        className="bg-red-600 text-white w-10 h-10 rounded-lg hover:bg-red-700"
+                      >
+                        −
+                      </button>
+                      <input
+                        type="number"
+                        value={pages}
+                        onChange={(e) => setPages(Math.max(1, Number.parseInt(e.target.value) || 1))}
+                        className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-center"
+                      />
+                      <button
+                        onClick={() => setPages(pages + 1)}
+                        className="bg-red-600 text-white w-10 h-10 rounded-lg hover:bg-red-700"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">{wordCountMap[pages] || 250} words</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Deadline</label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-3.5 text-gray-400" size={20} />
+                      <input
+                        type="date"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                        className="w-full border border-gray-300 rounded-lg px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-red-600"
+                      />
+                    </div>
+                  </div>
+                  <div className="border-t pt-4 mt-4">
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-gray-600">
+                        £{(academicLevels.find((l) => l.label === selectedLevel)?.price || 20.5).toFixed(2)} per page
+                      </span>
+                      <span className="text-3xl font-bold text-red-600">£{getCurrentPrice().toFixed(2)}</span>
+                    </div>
+                    <Button
+                      onClick={handleOrderNow}
+                      className="w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg"
+                    >
+                      Order now
+                    </Button>
                   </div>
                 </div>
-                <div className="border-t pt-4 mt-4">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-gray-600">
-                      £{(academicLevels.find((l) => l.label === selectedLevel)?.price || 20.5).toFixed(2)} per page
-                    </span>
-                    <span className="text-3xl font-bold text-blue-600">£{getCurrentPrice().toFixed(2)}</span>
-                  </div>
-                  <Button
-                    onClick={handleOrderNow}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg"
-                  >
-                    Order now
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Bar */}
-      <section className="bg-gray-50 py-8 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex items-center gap-3">
-              <img
-                src="/profile-picture-of-john-ayo.jpg"
-                alt="John Ayo"
-                className="w-12 h-12 rounded-full object-cover"
-              />
-              <div>
-                <div className="font-bold text-lg">John Ayo</div>
-                <div className="text-sm text-gray-600">★★★★★ 5.0</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <img
-                src="/profile-picture-of-stephans.jpg"
-                alt="Stephans"
-                className="w-12 h-12 rounded-full object-cover"
-              />
-              <div>
-                <div className="font-bold text-lg">Stephans</div>
-                <div className="text-sm text-gray-600">★★★★★ 5.0</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <img
-                src="/profile-picture-of-satisfied-customer.jpg"
-                alt="Mary"
-                className="w-12 h-12 rounded-full object-cover"
-              />
-              <div>
-                <div className="font-bold text-lg">Mary</div>
-                <div className="text-sm text-gray-600">★★★★★ 5.0</div>
               </div>
             </div>
           </div>
@@ -563,14 +551,21 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 transition-all duration-700 ease-in-out">
               {getVisibleServices().map((service, idx) => {
                 const Icon = service.icon
+                const isFocused = idx === 0
                 return (
                   <Card
                     key={idx}
-                    className="p-6 rounded-2xl transition-all duration-700 ease-in-out cursor-pointer flex flex-col bg-blue-50 text-gray-900 border-blue-200 hover:border-blue-400 hover:shadow-md"
+                    className={`p-6 rounded-2xl transition-all duration-700 ease-in-out cursor-pointer flex flex-col bg-red-50 text-gray-900 border-red-200 hover:border-red-400 hover:shadow-md h-80 w-full ${
+                      idx > 0 ? "hidden md:flex" : "flex"
+                    } ${
+                      isFocused
+                        ? "opacity-100 scale-100 border-2 border-red-600 shadow-lg"
+                        : "opacity-50 scale-95 hover:opacity-75"
+                    }`}
                   >
-                    <Icon className="w-12 h-12 mb-4 text-blue-600" />
-                    <h3 className="text-lg font-bold mb-3">{service.title}</h3>
-                    <p className="text-sm flex-grow text-gray-600">{service.description}</p>
+                    <Icon className="w-12 h-12 mb-4 text-red-600 flex-shrink-0" />
+                    <h3 className="text-lg font-bold mb-3 text-gray-900 line-clamp-2">{service.title}</h3>
+                    <p className="text-sm flex-grow text-gray-600 line-clamp-3">{service.description}</p>
                   </Card>
                 )
               })}
@@ -579,14 +574,14 @@ export default function Home() {
             {/* Navigation Arrows */}
             <button
               onClick={prevService}
-              className="absolute left-0 top-1/2 -translate-y-1/2 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition shadow-lg"
+              className="absolute left-0 top-1/2 -translate-y-1/2 bg-red-600 text-white p-3 rounded-full hover:bg-red-700 transition shadow-lg"
               aria-label="Previous services"
             >
               <ChevronLeft size={24} />
             </button>
             <button
               onClick={nextService}
-              className="absolute right-0 top-1/2 -translate-y-1/2 bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition shadow-lg"
+              className="absolute right-0 top-1/2 -translate-y-1/2 bg-red-600 text-white p-3 rounded-full hover:bg-red-700 transition shadow-lg"
               aria-label="Next services"
             >
               <ChevronRight size={24} />
@@ -600,7 +595,7 @@ export default function Home() {
                 key={idx}
                 onClick={() => setServicesIndex(idx)}
                 className={`w-2 h-2 rounded-full transition-all ${
-                  idx >= servicesIndex && idx < servicesIndex + 4 ? "bg-blue-600 w-8" : "bg-gray-300"
+                  idx >= servicesIndex && idx < servicesIndex + 4 ? "bg-red-600 w-8" : "bg-gray-300"
                 }`}
                 aria-label={`Go to service ${idx + 1}`}
               />
@@ -609,56 +604,15 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">How Does it Work?</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-              dolore magna aliquam
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            {/* Timeline line for desktop */}
-            <div className="hidden md:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 via-purple-400 to-green-400 -z-10"></div>
-
-            {howItWorksSteps.map((step, idx) => {
-              const Icon = step.icon
-              return (
-                <div key={idx} className="relative">
-                  {/* Step number badge */}
-                  <div className="flex justify-center mb-6">
-                    <div
-                      className={`w-20 h-20 rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-bold text-2xl shadow-lg relative z-10`}
-                    >
-                      {step.number}
-                    </div>
-                  </div>
-
-                  {/* Step card */}
-                  <Card className="p-8 bg-white border-0 shadow-lg rounded-2xl text-center">
-                    <div className="flex justify-center mb-4">
-                      <div className="p-4 bg-blue-50 rounded-full">
-                        <Icon className="w-8 h-8 text-blue-600" />
-                      </div>
-                    </div>
-                    <h3 className="text-xl font-bold mb-3 text-gray-900">{step.title}</h3>
-                    <p className="text-gray-600 text-sm">{step.description}</p>
-                  </Card>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
+      {/* Services Section */}
+      
 
       {/* Testimonials Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold mb-4 text-gray-900">What Our Valuable Customers Say About Us?</h2>
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">What Our Valuable Customers Say About Us?</h2>
               <p className="text-gray-600 mb-6">
                 Join thousands of satisfied students who have improved their grades with our essay writing service.
               </p>
@@ -666,7 +620,7 @@ export default function Home() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {testimonials.map((testimonial, idx) => (
-                <Card key={idx} className="p-6 bg-gray-50 border-gray-200">
+                <Card key={idx} className="p-6 bg-gray-50 border-gray-200 h-full">
                   <div className="flex gap-1 mb-3">
                     {[...Array(testimonial.rating)].map((_, i) => (
                       <Star key={i} size={16} className="fill-yellow-400 text-yellow-400" />
@@ -686,17 +640,105 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-center mb-16 text-gray-900">Our Guarantees</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {guarantees.map((guarantee, idx) => {
-              const Icon = guarantee.icon
+            <Card className="p-8 bg-white border-gray-200 hover:shadow-lg transition h-full">
+              <Clock className="text-red-600 mb-4" size={32} />
+              <h3 className="text-xl font-bold mb-3 text-gray-900">You Get Your Time Back</h3>
+              <p className="text-gray-600 text-sm">
+                Reclaim those hours spent stressing over essays. Spend them on what matters—other classes, your job,
+                your friends, or finally just... breathing.
+              </p>
+            </Card>
+            <Card className="p-8 bg-white border-gray-200 hover:shadow-lg transition h-full">
+              <Users className="text-red-600 mb-4" size={32} />
+              <h3 className="text-xl font-bold mb-3 text-gray-900">You Learn from the Best</h3>
+              <p className="text-gray-600 text-sm">
+                Our tutors aren't just writers; they're subject-matter experts, PhDs, and academic pros who know how to
+                craft an A-grade paper.
+              </p>
+            </Card>
+            <Card className="p-8 bg-white border-gray-200 hover:shadow-lg transition h-full">
+              <Star className="text-red-600 mb-4" size={32} />
+              <h3 className="text-xl font-bold mb-3 text-gray-900">You Submit with Pride</h3>
+              <p className="text-gray-600 text-sm">
+                Get ready for that "wow" factor. We deliver polished, profound, and perfectly cited work that doesn't
+                just meet the standard—it sets a new one.
+              </p>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works - Updated with new process */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+              We've Perfected the Process So You Can Relax
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Three simple steps to transform your academic stress into standout success
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            {/* Timeline line for desktop */}
+            <div className="hidden md:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-red-400 via-red-400 to-red-400 -z-10"></div>
+
+            {howItWorksSteps.map((step, idx) => {
+              const Icon = step.icon
               return (
-                <Card key={idx} className="p-8 bg-white border-gray-200 hover:shadow-lg transition">
-                  <Icon className="text-blue-600 mb-4" size={32} />
-                  <h3 className="text-xl font-bold mb-3 text-gray-900">{guarantee.title}</h3>
-                  <p className="text-gray-600 text-sm">{guarantee.description}</p>
-                </Card>
+                <div key={idx} className="relative">
+                  {/* Step number badge */}
+                  <div className="flex justify-center mb-6">
+                    <div
+                      className={`w-20 h-20 rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center text-white font-bold text-2xl shadow-lg relative z-10`}
+                    >
+                      {step.number}
+                    </div>
+                  </div>
+
+                  {/* Step card */}
+                  <Card className="p-8 bg-white border-0 shadow-lg rounded-2xl text-center h-full">
+                    <div className="flex justify-center mb-4">
+                      <div className="p-4 bg-red-50 rounded-full">
+                        <Icon className="w-8 h-8 text-red-600" />
+                      </div>
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 text-gray-900">{step.title}</h3>
+                    <p className="text-gray-600 text-sm">
+                      {idx === 0 && "Match with Your Perfect Expert in 3 simple steps."}
+                      {idx === 1 && "Collaborate Directly with your writer for a truly custom piece."}
+                      {idx === 2 && "Receive a Masterpiece that's original, insightful, and delivered right on time."}
+                    </p>
+                  </Card>
+                </div>
               )
             })}
           </div>
+        </div>
+      </section>
+
+      {/* CTA Section - New section with powerful call-to-action */}
+      <section className="py-20 bg-gradient-to-br from-red-600 to-red-700 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-balance">
+            Don't just keep coping. Start excelling.
+          </h2>
+          <p className="text-xl text-red-100 mb-8 text-balance">You have two choices:</p>
+          <div className="space-y-4 mb-12 text-lg text-red-100">
+            <p>1. Keep battling the same stress cycle, hoping for the best.</p>
+            <p>
+              2. Make a powerful change. Click the button below, and in minutes, you'll be on the path to your best
+              semester yet.
+            </p>
+          </div>
+          <Button className="bg-white text-red-600 hover:bg-gray-100 text-base md:text-lg px-4 md:px-8 md:py-6 w-full md:w-auto mb-0 py-[18px]">
+            <a href="/checkout" className="no-underline">
+              Click Here to Get Your Expert & Unlock Your A!
+            </a>
+          </Button>
+          <p className="text-xl text-red-100">Your future self will thank you.</p>
+          <p className="text-2xl font-bold mt-6">Eccentric Essays. Your Grade. Our Passion.</p>
         </div>
       </section>
 
@@ -707,7 +749,7 @@ export default function Home() {
           <Accordion type="single" collapsible className="space-y-4">
             {faqs.map((faq, idx) => (
               <AccordionItem key={idx} value={`item-${idx}`} className="border border-gray-200 rounded-lg px-6">
-                <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-blue-600">
+                <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-red-600">
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-gray-600">{faq.answer}</AccordionContent>
@@ -882,17 +924,17 @@ export default function Home() {
               <div className="flex gap-4">
                 <a href="#" className="text-gray-600 hover:text-gray-900 transition">
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.338-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                   </svg>
                 </a>
                 <a href="#" className="text-gray-600 hover:text-gray-900 transition">
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.597 1.23 2.524 1.23 1.523 0 2.745-.826 3.417-2.399 1.854-4.145 1.654-11.497 1.654-11.497-.916 0-2.549.78-2.607 1.634-.064.723-.254 1.304-.565 1.524-2.929.87-6.511 1.88-7.016 2.246v-1.255c.21.09.498.16 1.01.16h.112c.521 0 1.04-.055 1.574-.203a1 1 0 00.755-.54l.025-.122c.02-.401-.18-.91-.655-1.338a11.614 11.614 0 00-7.208-5.499C2.691 1.21 1.345 5.68 1.345 10.48c0 4.897 1.346 9.367 3.624 13.455.18.31.495.507.965.507.01 0 .005-.005.015-.015.681-.067 1.481-.21 2.329-.418z" />
                   </svg>
                 </a>
                 <a href="#" className="text-gray-600 hover:text-gray-900 transition">
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 7-7 7-7a10.6 10.6 0 01-9-5.5z" />
+                    <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 00-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 7-7 7-7a10.6 10.6 0 01-9-5.5z" />
                   </svg>
                 </a>
               </div>

@@ -47,7 +47,7 @@ export default function AuthPage() {
             <button
               onClick={() => setIsLogin(true)}
               className={`pb-4 font-semibold transition-colors ${
-                isLogin ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500 hover:text-gray-700"
+                isLogin ? "text-red-600 border-b-2 border-red-600" : "text-gray-500 hover:text-gray-700"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -58,7 +58,7 @@ export default function AuthPage() {
             <button
               onClick={() => setIsLogin(false)}
               className={`pb-4 font-semibold transition-colors ${
-                !isLogin ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500 hover:text-gray-700"
+                !isLogin ? "text-red-600 border-b-2 border-red-600" : "text-gray-500 hover:text-gray-700"
               }`}
             >
               <div className="flex items-center gap-2">
@@ -86,7 +86,7 @@ export default function AuthPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="Enter your email address"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
                     required
                   />
                 </div>
@@ -95,7 +95,7 @@ export default function AuthPage() {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <label className="block text-sm font-medium text-gray-700">Password</label>
-                  <a href="#" className="text-sm text-blue-600 hover:text-blue-700">
+                  <a href="#" className="text-sm text-red-600 hover:text-red-700">
                     Forgot password?
                   </a>
                 </div>
@@ -107,7 +107,7 @@ export default function AuthPage() {
                     value={formData.password}
                     onChange={handleInputChange}
                     placeholder="Enter your password"
-                    className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
                     required
                   />
                   <button
@@ -166,7 +166,7 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => setIsLogin(false)}
-                  className="text-blue-600 hover:text-blue-700 font-semibold"
+                  className="text-red-600 hover:text-red-700 font-semibold"
                 >
                   Sign up
                 </button>
@@ -192,7 +192,7 @@ export default function AuthPage() {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder="Enter your full name"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
                     required
                   />
                 </div>
@@ -208,7 +208,7 @@ export default function AuthPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="Enter your email address"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
                     required
                   />
                 </div>
@@ -224,7 +224,7 @@ export default function AuthPage() {
                     value={formData.password}
                     onChange={handleInputChange}
                     placeholder="Create a password"
-                    className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
                     required
                   />
                   <button
@@ -247,7 +247,7 @@ export default function AuthPage() {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     placeholder="Confirm your password"
-                    className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
                     required
                   />
                   <button
@@ -260,7 +260,7 @@ export default function AuthPage() {
                 </div>
               </div>
 
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg font-semibold">
+              <Button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg font-semibold">
                 Create Account
               </Button>
 
@@ -306,7 +306,7 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => setIsLogin(true)}
-                  className="text-blue-600 hover:text-blue-700 font-semibold"
+                  className="text-red-600 hover:text-red-700 font-semibold"
                 >
                   Login
                 </button>
@@ -317,7 +317,7 @@ export default function AuthPage() {
       </div>
 
       {/* Right Side - Background Image with Testimonial */}
-      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 relative overflow-hidden items-center justify-center p-12">
+      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-red-600 to-red-800 relative overflow-hidden items-center justify-center p-12">
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center opacity-40"
@@ -328,7 +328,7 @@ export default function AuthPage() {
         ></div>
 
         {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-900 via-blue-800/50 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-red-900 via-red-800/50 to-transparent"></div>
 
         {/* Testimonial Card */}
         <Card className="relative z-10 bg-black/40 backdrop-blur-md border-white/20 p-8 max-w-md text-white">
@@ -350,7 +350,7 @@ export default function AuthPage() {
 
         {/* Decorative Elements */}
         <div className="absolute top-10 right-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
-        <div className="absolute bottom-20 left-10 w-32 h-32 bg-blue-400/10 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-20 left-10 w-32 h-32 bg-red-400/10 rounded-full blur-2xl"></div>
       </div>
     </div>
   )
