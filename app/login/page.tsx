@@ -6,11 +6,9 @@ import { login, isAdmin } from "@/lib/auth"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useAdmin } from "@/lib/admin-context"
 
 export default function LoginPage() {
   const router = useRouter()
-  const { setAdmin } = useAdmin()
   const formRef = useRef<HTMLFormElement>(null)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -31,8 +29,6 @@ export default function LoginPage() {
     setLoading(true)
     try {
       const { adminData } = await login(email, password)
-      // Set admin data in context immediately
-      setAdmin(adminData)
       toast.success(`Welcome back, ${adminData.first_name}!`)
       router.replace("/admin")
     } catch (err: any) {
