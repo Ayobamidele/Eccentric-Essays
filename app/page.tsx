@@ -35,6 +35,7 @@ export default function Home() {
   const [selectedLevel, setSelectedLevel] = useState("BA/BSC")
   const [pages, setPages] = useState(1)
   const [selectedDate, setSelectedDate] = useState("")
+  const [selectedPaperFormat, setSelectedPaperFormat] = useState("Chicago")
   const [lastScrollY, setLastScrollY] = useState(0)
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -206,6 +207,9 @@ export default function Home() {
     { label: "PHD", price: 24.5 },
   ]
 
+  // Available paper formats for the calculator
+  const paperFormats = ["Chicago", "Harvard", "APA", "Vancouver", "MLA", "Oscola", "Turabian", "Other"]
+
   const guarantees = [
     {
       title: "Zero Plagiarism",
@@ -323,12 +327,23 @@ export default function Home() {
   }
 
   const handleOrderNow = () => {
-    const params = new URLSearchParams({
-      service: selectedService,
-      level: selectedLevel,
-      pages: pages.toString(),
-      deadline: selectedDate,
-    })
+    // Create paper details
+    const params = new URLSearchParams()
+    
+    // Add order parameters
+    params.append("service", selectedService)
+    params.append("level", selectedLevel)
+    params.append("pages", pages.toString())
+    params.append("deadline", selectedDate)
+    
+  // Add paper details
+  params.append("paperFormat", selectedPaperFormat)
+    params.append("customFormat", "")
+    params.append("subject", "")
+    params.append("topics", "")
+    params.append("additionalInfo", "")
+    
+    // Navigate to checkout
     window.location.href = `/checkout?${params.toString()}`
   }
 
@@ -356,14 +371,6 @@ export default function Home() {
                 Contact Us
               </a>
               <div className="flex items-center gap-4">
-                <a href="/auth" className="text-gray-700 hover:text-red-600 transition font-medium">
-                  Sign In
-                </a>
-                <Button className="bg-red-600 hover:bg-red-700 text-white">
-                  <a href="/auth" className="no-underline">
-                    Sign Up
-                  </a>
-                </Button>
               </div>
             </div>
 
@@ -385,14 +392,7 @@ export default function Home() {
               <a href="#contact" className="block text-gray-700 hover:text-red-600 py-2">
                 Contact Us
               </a>
-              <a href="/auth" className="block text-gray-700 hover:text-red-600 py-2">
-                Sign In
-              </a>
-              <Button className="w-full bg-red-600 hover:bg-red-700 text-white">
-                <a href="/auth" className="no-underline">
-                  Sign Up
-                </a>
-              </Button>
+
             </div>
           )}
         </div>
@@ -515,6 +515,20 @@ export default function Home() {
                         className="w-full border border-gray-300 rounded-lg px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-red-600"
                       />
                     </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Paper Format</label>
+                    <select
+                      value={selectedPaperFormat}
+                      onChange={(e) => setSelectedPaperFormat(e.target.value)}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                    >
+                      {paperFormats.map((fmt) => (
+                        <option key={fmt} value={fmt}>
+                          {fmt}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div className="border-t pt-4 mt-4">
                     <div className="flex justify-between items-center mb-4">

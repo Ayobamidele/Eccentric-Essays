@@ -7,8 +7,11 @@ import { Mail, Lock, User, Eye, EyeOff, Chrome, Apple, Wallet } from "lucide-rea
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { login } from "@/lib/auth"
 
 export default function AuthPage() {
+  const router = useRouter()
   const [isLogin, setIsLogin] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -18,6 +21,8 @@ export default function AuthPage() {
     password: "",
     confirmPassword: "",
   })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -27,9 +32,26 @@ export default function AuthPage() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted:", formData)
+    setError(null)
+    if (loading) return
+
+    if (isLogin) {
+      try {
+        setLoading(true)
+        await login(formData.email, formData.password)
+        router.replace("/admin")
+      } catch (err: any) {
+        setError(err?.message || "Login failed")
+      } finally {
+        setLoading(false)
+      }
+    } else {
+      // For now, just keep the existing placeholder behavior for Sign Up
+      // Could be wired to register() similarly
+      console.log("Form submitted:", formData)
+    }
   }
 
   return (
@@ -76,6 +98,8 @@ export default function AuthPage() {
                 <p className="text-gray-600">Please enter your details to login.</p>
               </div>
 
+              {error && <div className="text-sm text-red-600">{error}</div>}
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Email address</label>
                 <div className="relative">
@@ -120,8 +144,12 @@ export default function AuthPage() {
                 </div>
               </div>
 
-              <Button className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 text-lg font-semibold">
-                Log In
+              <Button
+                type="submit"
+                className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 text-lg font-semibold"
+                disabled={loading || !formData.email || !formData.password}
+              >
+                {loading ? "Logging in..." : "Log In"}
               </Button>
 
               <div className="relative">
