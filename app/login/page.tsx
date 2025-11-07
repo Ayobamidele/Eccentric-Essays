@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { login, isAdmin } from "@/lib/auth"
+import { getPostLoginRedirect, clearPostLoginRedirect } from "@/lib/post-login"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -30,7 +31,14 @@ export default function LoginPage() {
     try {
       const { adminData } = await login(email, password)
       toast.success(`Welcome back, ${adminData.first_name}!`)
-      router.replace("/admin")
+      // If we saved an intended admin path, go there. Otherwise go to /admin
+      const saved = getPostLoginRedirect()
+      if (saved) {
+        clearPostLoginRedirect()
+        router.replace(saved)
+      } else {
+        router.replace("/admin")
+      }
     } catch (err: any) {
       const message = err?.message || "Login failed"
       toast.error(message)

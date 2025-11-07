@@ -1,4 +1,6 @@
 import { BACKEND_BASE_URL, AUTH_REFRESH_PATH } from "./env"
+import { toast } from "sonner"
+import { setPostLoginRedirect } from "./post-login"
 
 const TOKEN_KEY = "ee_token"
 const REFRESH_TOKEN_KEY = "ee_refresh_token"
@@ -94,7 +96,11 @@ function ensureRefresh(): Promise<boolean> {
   return refreshingPromise
 }
 
-export async function apiFetch<T = unknown>(path: string, options: RequestInit = {}): Promise<T> {
+export async function apiFetch<T = unknown>(
+  path: string,
+  options: RequestInit = {},
+  opts: { redirectOnAuthFail?: boolean } = {}
+): Promise<T> {
   const url = `${BACKEND_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`
   const headers: HeadersInit = {
     "Content-Type": "application/json",
@@ -137,13 +143,21 @@ export async function apiFetch<T = unknown>(path: string, options: RequestInit =
       body = isJson2 ? await res.json() : (await res.text()) as unknown
     }
     else {
-      // Refresh failed: clear tokens and redirect to login
+      // Refresh failed: clear tokens. Redirect only if caller requested it.
       try {
         setToken(null)
         setRefreshToken(null)
       } catch {}
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login'
+      if (opts.redirectOnAuthFail && typeof window !== 'undefined') {
+        try {
+          // Save current location so we can return after login
+          setPostLoginRedirect(window.location.pathname + window.location.search)
+        } catch {}
+        // show a short toast then redirect so the user isn't surprised
+        try {
+          toast.error('Session expired. Redirecting to login...')
+        } catch {}
+        setTimeout(() => { window.location.href = '/login' }, 1100)
       }
       throw new Error('Session expired')
     }

@@ -15,6 +15,10 @@ export default function CheckoutPage() {
   const [selectedLevel, setSelectedLevel] = useState("")
   const [pages, setPages] = useState(1)
   const [selectedDate, setSelectedDate] = useState("")
+  
+  // Common input classes with forced black text
+  const inputClasses = "[&]:text-gray-900 [&::placeholder]:text-gray-500 w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+  const selectClasses = "[&]:text-gray-900 [&>option]:text-gray-900 w-full min-w-0 border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
 
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
@@ -61,10 +65,6 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("paystack")
   const [agreedToTerms, setAgreedToTerms] = useState(false)
 
-  const [discountCode, setDiscountCode] = useState("")
-  const [discountPercentage, setDiscountPercentage] = useState(0)
-  const [discountError, setDiscountError] = useState("")
-
   // Handle URL parameters
   useEffect(() => {
     if (!searchParams) return;
@@ -79,6 +79,38 @@ export default function CheckoutPage() {
     setPages(Number.parseInt(pagesParam))
     setSelectedDate(deadline)
   }, [searchParams])
+
+  // Normalize paperItems: ensure each item always has numeric `pages` and sensible defaults.
+  // Run only when an item is missing required defaults to avoid infinite loops.
+  useEffect(() => {
+    if (paperItems.length === 0) return
+    let needsFix = false
+    for (const p of paperItems) {
+      if (typeof p.pages !== 'number' || Number.isNaN(p.pages) || p.pages < 1) {
+        needsFix = true
+        break
+      }
+      if (!p.service || !p.level || p.deadline === undefined) {
+        needsFix = true
+        break
+      }
+    }
+    if (needsFix) {
+      setPaperItems(prev => prev.map((p, i) => ({
+        id: p.id ?? String(i + 1),
+        paperFormat: p.paperFormat ?? 'Chicago',
+        customFormat: p.customFormat ?? '',
+        subject: p.subject ?? '',
+        topics: p.topics ?? '',
+        additionalInfo: p.additionalInfo ?? '',
+        uploadedFiles: p.uploadedFiles ?? [],
+        service: p.service || 'Essay Writing',
+        level: p.level || 'BA/BSC',
+        pages: (typeof p.pages === 'number' && !Number.isNaN(p.pages) && p.pages >= 1) ? p.pages : 1,
+        deadline: p.deadline ?? ''
+      })))
+    }
+  }, [paperItems])
 
   const services = [
     "Essay Writing",
@@ -113,12 +145,6 @@ export default function CheckoutPage() {
 
   const paperFormats = ["Chicago", "Harvard", "APA", "Vancouver", "MLA", "Oscola", "Turabian", "Other"]
 
-  const validDiscountCodes: { [key: string]: number } = {
-    SAVE10: 10,
-    SAVE20: 20,
-    WELCOME15: 15,
-    STUDENT25: 25,
-  }
 
   const wordCountMap: { [key: number]: number } = {
     1: 250,
@@ -152,31 +178,9 @@ export default function CheckoutPage() {
     }, 0)
   }
 
-  const applyDiscountCode = () => {
-    const code = discountCode.toUpperCase().trim()
-    if (!code) {
-      setDiscountError("Please enter a discount code")
-      return
-    }
-
-    if (validDiscountCodes[code]) {
-      setDiscountPercentage(validDiscountCodes[code])
-      setDiscountError("")
-    } else {
-      setDiscountError("Invalid discount code")
-      setDiscountPercentage(0)
-    }
-  }
-
-  const clearDiscount = () => {
-    setDiscountCode("")
-    setDiscountPercentage(0)
-    setDiscountError("")
-  }
 
   const subtotal = getCurrentPrice()
-  const discountAmount = (subtotal * discountPercentage) / 100
-  const total = subtotal - discountAmount
+  const total = subtotal
 
   // Helper function to validate file types
   const isValidFileType = (file: File) => {
@@ -221,7 +225,7 @@ export default function CheckoutPage() {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Enter your first name"
-                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                    className={inputClasses}
                   />
                 </div>
                   <div>
@@ -231,7 +235,7 @@ export default function CheckoutPage() {
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
                       placeholder="Enter your last name"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                      className={inputClasses}
                     />
                   </div>
                   <div>
@@ -241,7 +245,7 @@ export default function CheckoutPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                      className={inputClasses}
                     />
                   </div>
                   <div>
@@ -251,14 +255,14 @@ export default function CheckoutPage() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="Enter your phone number"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                      className={inputClasses}
                     />
                   </div>
                 </div>
             </Card>
 
             <Card className="p-8 bg-white border-gray-200">
-              <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">2. Paper Details</h2>
                 <Button 
                   onClick={() => setPaperItems(prev => [...prev, {
@@ -268,7 +272,13 @@ export default function CheckoutPage() {
                     subject: "",
                     topics: "",
                     additionalInfo: "",
-                    uploadedFiles: []
+                    uploadedFiles: [],
+                    // Ensure a new paper always has a pages value so the UI shows the number
+                    pages: 1,
+                    // sensible defaults to match initialPaper
+                    service: "Essay Writing",
+                    level: "BA/BSC",
+                    deadline: "",
                   }])}
                   className="bg-red-600 hover:bg-red-700 text-white"
                 >
@@ -298,9 +308,10 @@ export default function CheckoutPage() {
                       <div className="min-w-0">
                         <label className="block text-sm font-medium text-gray-700 mb-2">Service Type</label>
                         <select
+                          title="Service Type"
                           value={item.service}
                           onChange={(e) => setPaperItems(prev => prev.map(p => p.id === item.id ? { ...p, service: e.target.value } : p))}
-                          className="w-full min-w-0 border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                          className={selectClasses}
                         >
                           {services.map((s) => (
                             <option key={s} value={s}>{s}</option>
@@ -311,9 +322,10 @@ export default function CheckoutPage() {
                       <div className="min-w-0">
                         <label className="block text-sm font-medium text-gray-700 mb-2">Academic Level</label>
                         <select
+                          title="Academic Level"
                           value={item.level}
                           onChange={(e) => setPaperItems(prev => prev.map(p => p.id === item.id ? { ...p, level: e.target.value } : p))}
-                          className="w-full min-w-0 border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                          className={selectClasses}
                         >
                           {academicLevels.map((lvl) => (
                             <option key={lvl.label} value={lvl.label}>{lvl.label} - £{lvl.price.toFixed(2)}</option>
@@ -324,48 +336,63 @@ export default function CheckoutPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-end">
                       <div className="min-w-0">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Pages</label>
-                        <div className="flex items-center gap-3">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Number of pages</label>
+                        <div className="flex items-stretch h-6">
                           <button
                             onClick={() => setPaperItems(prev => prev.map(p => p.id === item.id ? { ...p, pages: Math.max(1, (p.pages || 1) - 1) } : p))}
-                            className="bg-red-600 text-white w-10 h-10 rounded-lg hover:bg-red-700"
+                            className="bg-red-600 text-white w-6 h-6 rounded-l-md hover:bg-red-700 flex items-center justify-center text-sm font-medium"
                             aria-label="Decrease pages"
                           >
                             −
                           </button>
                           <input
-                            type="number"
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            min={1}
                             value={item.pages || 1}
-                            onChange={(e) => setPaperItems(prev => prev.map(p => p.id === item.id ? { ...p, pages: Math.max(1, Number.parseInt(e.target.value) || 1) } : p))}
-                            className="w-full min-w-0 border border-gray-300 rounded-lg px-4 py-2 text-center"
+                            onChange={(e) => {
+                              const v = Math.max(1, Number.parseInt(e.target.value) || 1)
+                              setPaperItems(prev => prev.map(p => p.id === item.id ? { ...p, pages: v } : p))
+                            }}
+                            className="w-8 h-6 border-0 bg-white px-0 text-center text-sm [&]:text-gray-900 font-medium focus:outline-none"
+                            style={{ WebkitAppearance: 'none', MozAppearance: 'textfield' }}
+                            aria-label={`Pages for paper ${index + 1}`}
+                            title="Number of pages"
                           />
                           <button
                             onClick={() => setPaperItems(prev => prev.map(p => p.id === item.id ? { ...p, pages: (p.pages || 1) + 1 } : p))}
-                            className="bg-red-600 text-white w-10 h-10 rounded-lg hover:bg-red-700"
+                            className="bg-red-600 text-white w-6 h-6 rounded-r-md hover:bg-red-700 flex items-center justify-center text-sm font-medium"
                             aria-label="Increase pages"
                           >
                             +
                           </button>
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">{wordCountMap[item.pages || 1] || 250} words</p>
+                        <div className="flex items-center mt-1 gap-1">
+                          <span className="text-xs text-gray-500">{(item.pages || 1)}</span>
+                          <span className="text-xs text-gray-500">·</span>
+                          <span className="text-xs text-gray-500">{wordCountMap[item.pages || 1] || 250} words</span>
+                        </div>
                       </div>
 
                       <div className="min-w-0">
                         <label className="block text-sm font-medium text-gray-700 mb-2">Deadline</label>
                         <input
+                          title="Deadline date"
                           type="date"
                           value={item.deadline || ''}
                           onChange={(e) => setPaperItems(prev => prev.map(p => p.id === item.id ? { ...p, deadline: e.target.value } : p))}
-                          className="w-full min-w-0 border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                          className="w-full min-w-0 border border-gray-300 rounded-lg px-4 py-3 [&]:text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-600"
                         />
                       </div>
 
                       <div className="min-w-0">
                         <label className="block text-sm font-medium text-gray-700 mb-2">Format</label>
                         <select
+                          title="Paper format"
                           value={item.paperFormat}
                           onChange={(e) => setPaperItems(prev => prev.map(p => p.id === item.id ? { ...p, paperFormat: e.target.value } : p))}
-                          className="w-full min-w-0 border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                          className={selectClasses}
                         >
                           {paperFormats.map((fmt) => (
                             <option key={fmt} value={fmt}>{fmt}</option>
@@ -388,7 +415,7 @@ export default function CheckoutPage() {
                         p.id === item.id ? { ...p, subject: e.target.value } : p
                       ))}
                       placeholder="Enter your subject"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 [&]:text-gray-900 [&::placeholder]:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
                     />
                   </div>
 
@@ -404,7 +431,7 @@ export default function CheckoutPage() {
                         p.id === item.id ? { ...p, topics: e.target.value } : p
                       ))}
                       placeholder="Enter topic name"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 [&]:text-gray-900 [&::placeholder]:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
                     />
                   </div>
 
@@ -420,7 +447,7 @@ export default function CheckoutPage() {
                       ))}
                       placeholder="Enter any additional information"
                       rows={6}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 [&]:text-gray-900 [&::placeholder]:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
                     />
                   </div>
 
@@ -484,8 +511,7 @@ export default function CheckoutPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-6">3. Payment Method</h2>
               <div className="space-y-4">
                 <label
-                  className="flex items-center gap-3 p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-red-500 transition-colors"
-                  style={{ borderColor: paymentMethod === "paystack" ? "#DC2626" : undefined }}
+                  className={`flex items-center gap-3 p-4 border-2 ${paymentMethod === "paystack" ? 'border-red-600' : 'border-gray-300'} rounded-lg cursor-pointer hover:border-red-500 transition-colors`}
                 >
                   <input
                     type="radio"
@@ -501,8 +527,7 @@ export default function CheckoutPage() {
                   </div>
                 </label>
                 <label
-                  className="flex items-center gap-3 p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-red-500 transition-colors"
-                  style={{ borderColor: paymentMethod === "stripe" ? "#DC2626" : undefined }}
+                  className={`flex items-center gap-3 p-4 border-2 ${paymentMethod === "stripe" ? 'border-red-600' : 'border-gray-300'} rounded-lg cursor-pointer hover:border-red-500 transition-colors`}
                 >
                   <input
                     type="radio"
@@ -590,48 +615,14 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
-              <div className="border-t pt-4 mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Discount Code</label>
-                <div className="flex gap-2 mb-2">
-                  <input
-                    type="text"
-                    value={discountCode}
-                    onChange={(e) => setDiscountCode(e.target.value)}
-                    placeholder="Enter discount code"
-                    className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-600"
-                  />
-                  <button
-                    onClick={applyDiscountCode}
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold text-sm hover:bg-red-700 transition-colors"
-                  >
-                    Apply
-                  </button>
-                </div>
-                {discountError && <p className="text-red-600 text-xs mb-2">{discountError}</p>}
-                {discountPercentage > 0 && (
-                  <div className="flex justify-between items-center text-sm bg-green-50 p-2 rounded border border-green-200 mb-2">
-                    <span className="text-green-700 font-semibold">{discountPercentage}% discount applied</span>
-                    <button
-                      onClick={clearDiscount}
-                      className="text-green-600 hover:text-green-700 text-xs font-semibold"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                )}
-              </div>
+              {/* Discount code removed — admin-only promotions are disabled in checkout */}
 
               <div className="border-t pt-4 space-y-2">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Sub Total:</span>
                   <span className="font-semibold">£{subtotal.toFixed(2)}</span>
                 </div>
-                {discountPercentage > 0 && (
-                  <div className="flex justify-between text-green-600">
-                    <span>Discount ({discountPercentage}%):</span>
-                    <span className="font-semibold">-£{discountAmount.toFixed(2)}</span>
-                  </div>
-                )}
+                {/* Discounts removed from checkout summary */}
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax:</span>
                   <span className="font-semibold">£0.00</span>

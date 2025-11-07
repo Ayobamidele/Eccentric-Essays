@@ -24,7 +24,7 @@ export type AdminData = {
 
 export async function getAdminUsers(): Promise<AdminUser[]> {
   // Use ADMIN_ME_PATH as the admin listing endpoint as requested (/api/v1/admin)
-  const res = await apiFetch<any>(ADMIN_ME_PATH, { method: "GET" })
+  const res = await apiFetch<any>(ADMIN_ME_PATH, { method: "GET" }, { redirectOnAuthFail: true })
   // Accept common shapes
   if (Array.isArray(res)) return res as AdminUser[]
   if (res?.data && Array.isArray(res.data)) return res.data as AdminUser[]
@@ -33,17 +33,17 @@ export async function getAdminUsers(): Promise<AdminUser[]> {
 }
 
 export async function getAdminOverview(): Promise<any> {
-  return await apiFetch<any>(ADMIN_OVERVIEW_PATH, { method: "GET" })
+  return await apiFetch<any>(ADMIN_OVERVIEW_PATH, { method: "GET" }, { redirectOnAuthFail: true })
 }
 
 export async function getAdminMe(): Promise<AdminData> {
-  const res = await apiFetch<{data: AdminData}>(ADMIN_ME_PATH, { method: "GET" })
+  const res = await apiFetch<{data: AdminData}>(ADMIN_ME_PATH, { method: "GET" }, { redirectOnAuthFail: true })
   return res.data
 }
 
 export async function getAdminById(adminId: string): Promise<AdminData> {
   const path = `${ADMIN_ME_PATH}/${adminId}`
-  const res = await apiFetch<{data: AdminData}>(path, { method: "GET" })
+  const res = await apiFetch<{data: AdminData}>(path, { method: "GET" }, { redirectOnAuthFail: true })
   return res.data
 }
 
@@ -54,7 +54,7 @@ export async function getAdminOrders(status = "in_progress", skip = 0, limit = 5
   params.set("limit", String(limit))
 
   const path = `${ADMIN_ORDERS_PATH}?${params.toString()}`
-  const res = await apiFetch<any>(path, { method: "GET" })
+  const res = await apiFetch<any>(path, { method: "GET" }, { redirectOnAuthFail: true })
   // Accept standard response shapes
   if (res?.data) return res.data
   if (Array.isArray(res)) return res
