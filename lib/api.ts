@@ -48,16 +48,21 @@ async function refreshAccessToken(): Promise<boolean> {
   if (!refresh) return false
 
   try {
-    const url = `${BACKEND_BASE_URL}${AUTH_REFRESH_PATH.startsWith("/") ? AUTH_REFRESH_PATH : `/${AUTH_REFRESH_PATH}`}`
+    const url = `${BACKEND_BASE_URL}/api/v1/auth/refresh/admin`
     const res = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refresh_token: refresh }),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        refresh_token: refresh
+      })
     })
 
     if (!res.ok) return false
     const data = await res.json()
-    // Accept common shapes: data.access_token or data.token or data.data.access_token
+    // Accept standard response shape: data.access_token or nested in data
     const newToken = data?.access_token || data?.token || data?.data?.access_token || data?.data?.token
     const newRefresh = data?.refresh_token || data?.data?.refresh_token
     if (newToken) setToken(newToken)

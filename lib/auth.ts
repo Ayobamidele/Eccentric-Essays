@@ -74,6 +74,13 @@ export async function login(email: string, password: string) {
   // Fetch admin data right after successful login
   const adminData = await getAdminMe()
   
+  // Cache admin data locally so the UI can show the name immediately after redirect
+  try {
+    if (typeof window !== 'undefined' && adminData) {
+      localStorage.setItem('ee_admin', JSON.stringify(adminData))
+    }
+  } catch {}
+
   return { ...res, adminData }
 }
 
@@ -105,6 +112,11 @@ export async function logout() {
   } catch {
     // ignore
   }
+  try {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('ee_admin')
+    }
+  } catch {}
 }
 
 export function isAuthenticated() {

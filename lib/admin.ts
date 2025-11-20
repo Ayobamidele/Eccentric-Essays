@@ -23,8 +23,8 @@ export type AdminData = {
 }
 
 export async function getAdminUsers(): Promise<AdminUser[]> {
-  // Use ADMIN_ME_PATH as the admin listing endpoint as requested (/api/v1/admin)
-  const res = await apiFetch<any>(ADMIN_ME_PATH, { method: "GET" }, { redirectOnAuthFail: true })
+  // Direct call to /api/v1/admin endpoint to list all admin users
+  const res = await apiFetch<any>('/api/v1/admin', { method: "GET" }, { redirectOnAuthFail: true })
   // Accept common shapes
   if (Array.isArray(res)) return res as AdminUser[]
   if (res?.data && Array.isArray(res.data)) return res.data as AdminUser[]

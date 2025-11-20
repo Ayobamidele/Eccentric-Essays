@@ -6,10 +6,7 @@ import { useEffect } from "react"
 import {
   LayoutDashboard,
   ShoppingBag,
-  ClipboardList,
   Users,
-  MessageSquare,
-  Settings,
   LogOut
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -21,10 +18,7 @@ import { AdminProvider, useAdmin } from "@/lib/admin-context"
 const nav = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
-  { href: "/admin/assignments", label: "Assignments", icon: ClipboardList },
-  { href: "/admin/users", label: "Users", icon: Users },
-  { href: "/admin/messages", label: "Messages", icon: MessageSquare },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+  { href: "/admin/users", label: "Admin", icon: Users },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -33,12 +27,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const isActive = (href: string) => pathname === href || pathname?.startsWith(href + "/")
 
+  // Check admin status on mount and when the route changes. Do the redirect
+  // inside an effect to avoid reading localStorage during render and causing
+  // server/client markup mismatches (hydration errors).
   useEffect(() => {
-    // Check admin status on mount and route changes
     if (!isAdmin()) {
       router.replace('/login')
     }
-  }, [pathname])
+  }, [pathname, router])
 
   const handleLogout = async () => {
     try {

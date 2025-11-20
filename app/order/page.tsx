@@ -1,37 +1,28 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronLeft, Plus, Minus, Calendar, Trash2, Edit3 } from "lucide-react"
+import { ChevronLeft, Plus, Minus, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog"
 
 export default function OrderPage() {
-  const [activeTab, setActiveTab] = useState<"new" | "existing">("new")
+  const [showSuccess, setShowSuccess] = useState(false)
   const [selectedService, setSelectedService] = useState("Essay Writing")
   const [selectedLevel, setSelectedLevel] = useState("BA/BSC")
   const [pages, setPages] = useState(1)
   const [selectedDate, setSelectedDate] = useState("")
-  const [existingOrders, setExistingOrders] = useState([
-    {
-      id: 1,
-      service: "Essay Writing",
-      pages: 5,
-      level: "BA/BSC",
-      price: 102.5,
-      status: "Pending Payment",
-      deadline: "2025-11-15",
-    },
-    {
-      id: 2,
-      service: "Thesis Writing",
-      pages: 10,
-      level: "MA/MSC/MBA/MPHIL",
-      price: 225,
-      status: "Pending Payment",
-      deadline: "2025-12-01",
-    },
-  ])
+  
 
   const services = [
     "Essay Writing",
@@ -92,9 +83,7 @@ export default function OrderPage() {
     return (level?.price || 20.5) * pages
   }
 
-  const deleteOrder = (id: number) => {
-    setExistingOrders(existingOrders.filter((order) => order.id !== id))
-  }
+  // public page: no existing orders stored client-side
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -110,30 +99,11 @@ export default function OrderPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Tab Navigation */}
-        <div className="flex gap-4 mb-8 border-b border-gray-200">
-          <button
-            onClick={() => setActiveTab("new")}
-            className={`px-6 py-3 font-semibold transition-colors ${
-              activeTab === "new" ? "text-red-600 border-b-2 border-red-600" : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            <Plus className="inline mr-2" size={20} />
-            Create New Order
-          </button>
-          <button
-            onClick={() => setActiveTab("existing")}
-            className={`px-6 py-3 font-semibold transition-colors ${
-              activeTab === "existing" ? "text-red-600 border-b-2 border-red-600" : "text-gray-600 hover:text-gray-900"
-            }`}
-          >
-            <Edit3 className="inline mr-2" size={20} />
-            Existing Orders ({existingOrders.length})
-          </button>
+        {/* Create New Order */}
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-700">Create New Order</h2>
         </div>
 
-        {/* New Order Tab */}
-        {activeTab === "new" && (
           <div className="grid md:grid-cols-3 gap-8">
             {/* Order Form */}
             <div className="md:col-span-2">
@@ -217,9 +187,34 @@ export default function OrderPage() {
                       </span>
                       <span className="text-3xl font-bold text-red-600">£{getCurrentPrice().toFixed(2)}</span>
                     </div>
-                    <Button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg">
-                      Proceed to Payment
-                    </Button>
+                    <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
+                      <DialogTrigger asChild>
+                        <Button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg">
+                          Proceed to Payment
+                        </Button>
+                      </DialogTrigger>
+
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Payment Successful</DialogTitle>
+                          <DialogDescription>
+                            Your order has been created and payment was processed (simulated).
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="mt-4">
+                          <p className="text-sm text-gray-700">Service: <strong>{selectedService}</strong></p>
+                          <p className="text-sm text-gray-700">Level: <strong>{selectedLevel}</strong></p>
+                          <p className="text-sm text-gray-700">Pages: <strong>{pages}</strong></p>
+                          <p className="text-sm text-gray-700">Total: <strong>£{getCurrentPrice().toFixed(2)}</strong></p>
+                        </div>
+
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button onClick={() => setShowSuccess(false)}>Close</Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </div>
               </Card>
@@ -268,63 +263,8 @@ export default function OrderPage() {
               </Card>
             </div>
           </div>
-        )}
 
-        {/* Existing Orders Tab */}
-        {activeTab === "existing" && (
-          <div>
-            {existingOrders.length === 0 ? (
-              <Card className="p-12 bg-white border-gray-200 text-center">
-                <p className="text-gray-600 mb-4">No existing orders found.</p>
-                <Button onClick={() => setActiveTab("new")} className="bg-red-600 hover:bg-red-700 text-white">
-                  Create New Order
-                </Button>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                {existingOrders.map((order) => (
-                  <Card key={order.id} className="p-6 bg-white border-gray-200 hover:shadow-md transition">
-                    <div className="grid md:grid-cols-5 gap-4 items-center">
-                      <div>
-                        <p className="text-sm text-gray-600">Service</p>
-                        <p className="font-semibold text-gray-900">{order.service}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-600">Details</p>
-                        <p className="font-semibold text-gray-900">
-                          {order.pages} pages • {order.level}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-600">Deadline</p>
-                        <p className="font-semibold text-gray-900">{order.deadline}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-600">Status</p>
-                        <p className="font-semibold text-yellow-600">{order.status}</p>
-                      </div>
-                      <div className="flex items-end gap-2">
-                        <div className="text-right flex-1">
-                          <p className="text-sm text-gray-600">Price</p>
-                          <p className="text-2xl font-bold text-red-600">£{order.price.toFixed(2)}</p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2">Pay Now</Button>
-                          <button
-                            onClick={() => deleteOrder(order.id)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
-                          >
-                            <Trash2 size={20} />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+        {/* existing orders removed from public page */}
       </div>
     </div>
   )

@@ -424,10 +424,8 @@ export default function Home() {
               <p className="text-lg text-red-100 mb-8 text-balance">
                 That midnight panic, the blank screen stare, the fear of a looming deadline... It ends now.
               </p>
-              <Button className="bg-white text-red-600 hover:bg-gray-100 text-lg px-8 py-6">
-                <a href="/auth" className="no-underline">
-                  Get Started
-                </a>
+              <Button onClick={handleOrderNow} className="bg-white text-red-600 hover:bg-gray-100 text-lg px-8 py-6">
+                Get Started
               </Button>
             </div>
 
@@ -803,11 +801,6 @@ export default function Home() {
                   <p className="text-gray-700">Monday to Friday, 9 AM - 6 PM GMT</p>
                 </div>
               </div>
-
-              <button className="bg-gray-900 text-white px-6 py-3 rounded-full font-semibold hover:bg-gray-800 transition flex items-center gap-2">
-                Live Chat
-                <ChevronRight size={20} />
-              </button>
             </div>
 
             {/* Right Side - Contact Form */}

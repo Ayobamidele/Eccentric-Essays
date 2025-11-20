@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
+import { toast } from "sonner"
+import { createOrder, type OrderPaper } from "@/lib/orders"
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams()
@@ -62,8 +64,20 @@ export default function CheckoutPage() {
     }
   }, [searchParams, paperItems.length])
 
-  const [paymentMethod, setPaymentMethod] = useState("paystack")
+  const [paymentMethod, setPaymentMethod] = useState("stripe")
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [submittingOrder, setSubmittingOrder] = useState(false)
+
+  // Map UI academic level labels to backend-expected values
+  const mapAcademicLevel = (label?: string) => {
+    if (!label) return 'Undergraduate'
+    const l = label.toLowerCase()
+    if (l.includes('high')) return 'High School'
+    if (l.includes('ba') || l.includes('under')) return 'Undergraduate'
+    if (l.includes('ma') || l.includes('msc') || l.includes('master') || l.includes('mba') || l.includes('mphil')) return 'Masters'
+    if (l.includes('phd')) return 'PhD'
+    return 'Undergraduate'
+  }
 
   // Handle URL parameters
   useEffect(() => {
@@ -510,22 +524,7 @@ export default function CheckoutPage() {
             <Card className="p-8 bg-white border-gray-200">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">3. Payment Method</h2>
               <div className="space-y-4">
-                <label
-                  className={`flex items-center gap-3 p-4 border-2 ${paymentMethod === "paystack" ? 'border-red-600' : 'border-gray-300'} rounded-lg cursor-pointer hover:border-red-500 transition-colors`}
-                >
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="paystack"
-                    checked={paymentMethod === "paystack"}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="w-4 h-4"
-                  />
-                  <div>
-                    <span className="font-semibold text-gray-900">Paystack</span>
-                    <p className="text-sm text-gray-600">Secure payment with Paystack</p>
-                  </div>
-                </label>
+                {/* Paystack removed — Stripe is the only payment provider for now */}
                 <label
                   className={`flex items-center gap-3 p-4 border-2 ${paymentMethod === "stripe" ? 'border-red-600' : 'border-gray-300'} rounded-lg cursor-pointer hover:border-red-500 transition-colors`}
                 >
@@ -567,14 +566,64 @@ export default function CheckoutPage() {
               </label>
               <Button
                 disabled={!agreedToTerms}
+                onClick={async () => {
+                  if (submittingOrder) return
+                  if (!agreedToTerms) {
+                    toast.error('You must agree to the terms before placing an order')
+                    return
+                  }
+                  setSubmittingOrder(true)
+                  try {
+                    // build payload
+                    const papers = paperItems.map<OrderPaper>((p) => {
+                      const deadlineIso = p.deadline ? new Date(p.deadline).toISOString() : undefined
+                      return {
+                        service_type: p.service || 'Essay Writing',
+                        academic_level: mapAcademicLevel(p.level),
+                        pages: p.pages || 1,
+                        deadline: deadlineIso,
+                        paper_format: p.paperFormat || 'Chicago',
+                        paper_format_other: p.paperFormat === 'Other' ? p.customFormat || '' : undefined,
+                        subject: p.subject || '',
+                        topic: p.topics || '',
+                        topics: [],
+                        word_count: (p.pages || 1) * 250,
+                        instructions: p.additionalInfo || '',
+                      }
+                    })
+
+                    const payload = {
+                      first_name: firstName || '',
+                      last_name: lastName || '',
+                      email: email || '',
+                      phone: phone || '',
+                      papers,
+                    }
+
+                    const res = await createOrder(payload)
+                    toast.success('Order created successfully')
+                    // Extract order id from response
+                    const orderId = res?.id || res?.data?.id || (res?.data && res.data[0] && res.data[0].id)
+                    if (orderId) {
+                      setTimeout(() => { window.location.href = `/order/${orderId}` }, 700)
+                    } else {
+                      // fallback
+                      setTimeout(() => { window.location.href = '/order' }, 700)
+                    }
+                  } catch (err: any) {
+                    toast.error(err?.message || 'Failed to create order')
+                  } finally {
+                    setSubmittingOrder(false)
+                  }
+                }}
                 className={`w-full py-3 text-lg font-semibold transition-all ${
                   agreedToTerms
                     ? "bg-red-600 hover:bg-red-700 text-white"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
-              >
+                >
                 <Lock size={20} className="mr-2" />
-                Place Order
+                {submittingOrder ? 'Placing order...' : 'Place Order'}
               </Button>
             </Card>
           </div>

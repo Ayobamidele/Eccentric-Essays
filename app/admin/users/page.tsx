@@ -18,14 +18,12 @@ import {
 } from "@/components/ui/dialog"
 import { toast } from "sonner"
 
-const roles = ["Admin", "Writer", "Customer"]
 const statuses = ["Active", "Suspended", "Pending Verification"]
 
 export default function AdminUsersPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [query, setQuery] = useState("")
-  const [role, setRole] = useState<string>("")
   const [status, setStatus] = useState<string>("")
 
   // Add user modal state and form
@@ -62,13 +60,12 @@ export default function AdminUsersPage() {
     return users.filter((u) => {
       const name = (u as any).name || ((u as any).first_name && `${(u as any).first_name} ${(u as any).last_name}`) || ''
       const matchesQuery = query
-        ? [name, u.email, u.role].filter(Boolean).join(' ').toLowerCase().includes(query.toLowerCase())
+        ? [name, u.email].filter(Boolean).join(' ').toLowerCase().includes(query.toLowerCase())
         : true
-      const matchesRole = role ? (u.role || '').toLowerCase() === role.toLowerCase() : true
       const matchesStatus = status ? (u.status || '').toLowerCase() === status.toLowerCase() : true
-      return matchesQuery && matchesRole && matchesStatus
+      return matchesQuery && matchesStatus
     })
-  }, [users, query, role, status])
+  }, [users, query, status])
 
   const today = new Date()
   const dateStr = today.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })
@@ -79,16 +76,16 @@ export default function AdminUsersPage() {
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="text-sm text-gray-500">{dateStr}</div>
-          <h1 className="text-2xl font-bold text-gray-900">Users</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Admin</h1>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700">+ Add User</Button>
+            <Button className="bg-blue-600 hover:bg-blue-700">+ Add Admin</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add new admin user</DialogTitle>
-              <DialogDescription>Provide the user's details and click Create.</DialogDescription>
+              <DialogTitle>Add new admin</DialogTitle>
+              <DialogDescription>Provide the admin's details and click Create.</DialogDescription>
             </DialogHeader>
 
             <form
@@ -97,7 +94,7 @@ export default function AdminUsersPage() {
                 setSubmitting(true)
                 try {
                   await registerAdmin({ first_name: firstName, last_name: lastName, email, password })
-                  toast.success('User created successfully')
+                  toast.success('Admin created successfully')
                   setOpen(false)
                   // clear form
                   setFirstName('')
@@ -141,27 +138,13 @@ export default function AdminUsersPage() {
           <div className="relative md:flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <Input
-              placeholder="Search by name, email, or role"
+              placeholder="Search by name or email"
               className="pl-10"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
           </div>
             <div className="flex gap-3">
-            <select
-              aria-label="Role filter"
-              title="Role filter"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="h-10 px-3 border rounded-md text-sm text-gray-700 bg-white"
-            >
-              <option value="">Role</option>
-              {roles.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
             <select
               aria-label="Status filter"
               title="Status filter"
@@ -188,7 +171,6 @@ export default function AdminUsersPage() {
               <th className="py-3 pl-4 pr-2"><input aria-label="select all" title="Select all" type="checkbox" /></th>
               <th className="py-3 px-2">Name</th>
               <th className="py-3 px-2">Email</th>
-              <th className="py-3 px-2">Role</th>
               <th className="py-3 px-2">Status</th>
               <th className="py-3 px-2">Joined On</th>
               <th className="py-3 px-2">Actions</th>
@@ -197,7 +179,7 @@ export default function AdminUsersPage() {
           <tbody className="text-sm text-gray-700">
             {loading && (
               <tr>
-                <td className="py-6 px-4" colSpan={7}>Loading users...</td>
+                <td className="py-6 px-4" colSpan={7}>Loading admins...</td>
               </tr>
             )}
             {error && !loading && (
@@ -207,7 +189,7 @@ export default function AdminUsersPage() {
             )}
             {!loading && !error && filtered.length === 0 && (
               <tr>
-                <td className="py-6 px-4" colSpan={7}>No users found.</td>
+                <td className="py-6 px-4" colSpan={7}>No admins found.</td>
               </tr>
             )}
             {filtered.map((u) => {
@@ -218,7 +200,6 @@ export default function AdminUsersPage() {
                   <td className="py-3 pl-4 pr-2"><input aria-label={`select ${name}`} title={`Select ${name}`} type="checkbox" /></td>
                   <td className="py-3 px-2">{name}</td>
                   <td className="py-3 px-2">{u.email || '—'}</td>
-                  <td className="py-3 px-2">{u.role || '—'}</td>
                   <td className="py-3 px-2">{u.status || String((u as any).is_active) || '—'}</td>
                   <td className="py-3 px-2">{joined}</td>
                   <td className="py-3 px-2">
