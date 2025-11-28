@@ -1,6 +1,6 @@
 export const BACKEND_BASE_URL =
   process.env.NEXT_PUBLIC_BACKEND_BASE_URL?.replace(/\/$/, "") ||
-  "https://eccentric-essays-backend.onrender.com"
+  "http://127.0.0.1:8000"
 
 export const AUTH_LOGIN_PATH = process.env.NEXT_PUBLIC_AUTH_LOGIN_PATH || "/api/v1/auth/login/admin"
 export const AUTH_REGISTER_PATH = process.env.NEXT_PUBLIC_AUTH_REGISTER_PATH || "/api/v1/auth/register/admin"
