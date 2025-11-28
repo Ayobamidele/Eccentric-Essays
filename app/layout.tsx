@@ -15,6 +15,11 @@ export const metadata: Metadata = {
   title: "Eccentric Essays - Professional Essay Writing Service",
   description: "Get expert essay writing services. Quality essays delivered on time. Order now!",
   generator: "v0.app",
+  icons: {
+    icon: "/eccentric-essays-logo.png",
+    shortcut: "/eccentric-essays-logo.png",
+    apple: "/eccentric-essays-logo.png",
+  },
 }
 
 export default function RootLayout({
@@ -23,8 +28,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`min-h-screen bg-background text-foreground antialiased ${inter.className}`}>
         <Providers>
           {children}
           <Analytics />

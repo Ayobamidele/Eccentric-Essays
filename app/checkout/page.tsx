@@ -9,7 +9,7 @@ import { Card } from "@/components/ui/card"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { toast } from "sonner"
-import { createOrder, type OrderPaper } from "@/lib/orders"
+import { BACKEND_BASE_URL } from "@/lib/env"
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams()
@@ -26,6 +26,8 @@ export default function CheckoutPage() {
   const [lastName, setLastName] = useState("")
   const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
+  // Simple form errors state
+  const [errors, setErrors] = useState<Record<string, any>>({})
   // Account Details state
 
   type PaperItem = {
@@ -50,7 +52,10 @@ export default function CheckoutPage() {
       const initialPaper: PaperItem = {
         id: '1',
         paperFormat: searchParams?.get("paperFormat") || "Chicago",
-        customFormat: searchParams?.get("customFormat") || "",
+        customFormat:
+          searchParams?.get("customFormat") ||
+          searchParams?.get("paper_format_other") ||
+          "",
         subject: searchParams?.get("subject") || "",
         topics: searchParams?.get("topics") || "",
         additionalInfo: searchParams?.get("additionalInfo") || "",
@@ -64,7 +69,6 @@ export default function CheckoutPage() {
     }
   }, [searchParams, paperItems.length])
 
-  const [paymentMethod, setPaymentMethod] = useState("stripe")
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [submittingOrder, setSubmittingOrder] = useState(false)
 
@@ -126,6 +130,41 @@ export default function CheckoutPage() {
     }
   }, [paperItems])
 
+  // Clear errors when user edits any input so messages disappear as they fix issues
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      setErrors({})
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstName, lastName, phone, email, paperItems])
+
+  const validateForm = () => {
+    const e: Record<string, any> = {}
+
+    if (!firstName || !firstName.trim()) e.firstName = 'First name is required'
+    if (!lastName || !lastName.trim()) e.lastName = 'Last name is required'
+    if (!email || !email.trim()) e.email = 'Email is required'
+    else {
+      const re = /^\S+@\S+\.\S+$/
+      if (!re.test(email)) e.email = 'Please enter a valid email address'
+    }
+    if (!phone || !phone.trim()) e.phone = 'Phone number is required'
+
+    // Validate each paper item
+    const paperErrors: Record<string, any> = {}
+    for (const p of paperItems) {
+      const per: Record<string, string> = {}
+      if (!p.subject || !String(p.subject).trim()) per.subject = 'Subject is required'
+      if (!p.topics || !String(p.topics).trim()) per.topics = 'Topics is required'
+      if (!p.additionalInfo || !String(p.additionalInfo).trim()) per.additionalInfo = 'Additional information is required'
+      if (!per || Object.keys(per).length > 0) paperErrors[p.id] = per
+    }
+    if (Object.keys(paperErrors).length > 0) e.paperItems = paperErrors
+
+    setErrors(e)
+    return Object.keys(e).length === 0
+  }
+
   const services = [
     "Essay Writing",
     "Thesis Writing",
@@ -157,7 +196,7 @@ export default function CheckoutPage() {
     { label: "PHD", price: 24.5 },
   ]
 
-  const paperFormats = ["Chicago", "Harvard", "APA", "Vancouver", "MLA", "Oscola", "Turabian", "Other"]
+  const paperFormats = ["Chicago", "Harvard", "APA", "MLA", "Other"]
 
 
   const wordCountMap: { [key: number]: number } = {
@@ -241,6 +280,7 @@ export default function CheckoutPage() {
                     placeholder="Enter your first name"
                     className={inputClasses}
                   />
+                  {errors.firstName && <p className="text-sm text-red-600 mt-1">{errors.firstName}</p>}
                 </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
@@ -251,6 +291,7 @@ export default function CheckoutPage() {
                       placeholder="Enter your last name"
                       className={inputClasses}
                     />
+                    {errors.lastName && <p className="text-sm text-red-600 mt-1">{errors.lastName}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
@@ -261,6 +302,7 @@ export default function CheckoutPage() {
                       placeholder="Enter your email"
                       className={inputClasses}
                     />
+                    {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
@@ -271,6 +313,7 @@ export default function CheckoutPage() {
                       placeholder="Enter your phone number"
                       className={inputClasses}
                     />
+                    {errors.phone && <p className="text-sm text-red-600 mt-1">{errors.phone}</p>}
                   </div>
                 </div>
             </Card>
@@ -369,8 +412,7 @@ export default function CheckoutPage() {
                               const v = Math.max(1, Number.parseInt(e.target.value) || 1)
                               setPaperItems(prev => prev.map(p => p.id === item.id ? { ...p, pages: v } : p))
                             }}
-                            className="w-8 h-6 border-0 bg-white px-0 text-center text-sm [&]:text-gray-900 font-medium focus:outline-none"
-                            style={{ WebkitAppearance: 'none', MozAppearance: 'textfield' }}
+                            className="w-8 h-6 border-0 bg-white px-0 text-center text-sm [&]:text-gray-900 font-medium focus:outline-none numeric-input"
                             aria-label={`Pages for paper ${index + 1}`}
                             title="Number of pages"
                           />
@@ -405,7 +447,14 @@ export default function CheckoutPage() {
                         <select
                           title="Paper format"
                           value={item.paperFormat}
-                          onChange={(e) => setPaperItems(prev => prev.map(p => p.id === item.id ? { ...p, paperFormat: e.target.value } : p))}
+                          onChange={(e) => {
+                            const value = e.target.value
+                            setPaperItems(prev =>
+                              prev.map(p =>
+                                p.id === item.id ? { ...p, paperFormat: value, customFormat: value === "Other" ? p.customFormat : "" } : p,
+                              ),
+                            )
+                          }}
                           className={selectClasses}
                         >
                           {paperFormats.map((fmt) => (
@@ -413,6 +462,25 @@ export default function CheckoutPage() {
                           ))}
                         </select>
                       </div>
+                      {item.paperFormat === "Other" && (
+                        <div className="md:col-span-3 sm:col-span-2 col-span-1">
+                          <label className="block text-sm font-medium text-gray-700 mb-2 mt-2 md:mt-0" htmlFor={`custom-format-${item.id}`}>
+                            Specify paper format
+                          </label>
+                          <input
+                            id={`custom-format-${item.id}`}
+                            type="text"
+                            value={item.customFormat}
+                            onChange={(e) =>
+                              setPaperItems(prev =>
+                                prev.map(p => (p.id === item.id ? { ...p, customFormat: e.target.value } : p)),
+                              )
+                            }
+                            placeholder="Enter your preferred citation style"
+                            className={`${inputClasses} w-full`}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                   
@@ -429,8 +497,11 @@ export default function CheckoutPage() {
                         p.id === item.id ? { ...p, subject: e.target.value } : p
                       ))}
                       placeholder="Enter your subject"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 [&]:text-gray-900 [&::placeholder]:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
                     />
+                    {errors.paperItems?.[item.id]?.subject && (
+                      <p className="text-sm text-red-600 mt-1">{errors.paperItems[item.id].subject}</p>
+                    )}
                   </div>
 
                   {/* Topics */}
@@ -445,8 +516,11 @@ export default function CheckoutPage() {
                         p.id === item.id ? { ...p, topics: e.target.value } : p
                       ))}
                       placeholder="Enter topic name"
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 [&]:text-gray-900 [&::placeholder]:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
                     />
+                    {errors.paperItems?.[item.id]?.topics && (
+                      <p className="text-sm text-red-600 mt-1">{errors.paperItems[item.id].topics}</p>
+                    )}
                   </div>
 
                   {/* Additional Information */}
@@ -461,8 +535,11 @@ export default function CheckoutPage() {
                       ))}
                       placeholder="Enter any additional information"
                       rows={6}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 [&]:text-gray-900 [&::placeholder]:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                      className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-600"
                     />
+                    {errors.paperItems?.[item.id]?.additionalInfo && (
+                      <p className="text-sm text-red-600 mt-1">{errors.paperItems[item.id].additionalInfo}</p>
+                    )}
                   </div>
 
                   {/* File Upload */}
@@ -521,28 +598,7 @@ export default function CheckoutPage() {
               ))}
             </Card>
 
-            <Card className="p-8 bg-white border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">3. Payment Method</h2>
-              <div className="space-y-4">
-                {/* Paystack removed — Stripe is the only payment provider for now */}
-                <label
-                  className={`flex items-center gap-3 p-4 border-2 ${paymentMethod === "stripe" ? 'border-red-600' : 'border-gray-300'} rounded-lg cursor-pointer hover:border-red-500 transition-colors`}
-                >
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="stripe"
-                    checked={paymentMethod === "stripe"}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="w-4 h-4"
-                  />
-                  <div>
-                    <span className="font-semibold text-gray-900">Stripe</span>
-                    <p className="text-sm text-gray-600">Secure payment with Stripe</p>
-                  </div>
-                </label>
-              </div>
-            </Card>
+            {/* Payment method selection removed — payment handled via Checkout Session or order flow */}
 
             <Card className="p-6 bg-red-50 border border-red-200">
               <p className="text-gray-800 mb-4 leading-relaxed">
@@ -572,11 +628,28 @@ export default function CheckoutPage() {
                     toast.error('You must agree to the terms before placing an order')
                     return
                   }
+                  // Validate form fields and per-paper items before creating order
+                  const valid = validateForm()
+                  if (!valid) {
+                    toast.error('Please fix the highlighted fields and try again')
+                    return
+                  }
                   setSubmittingOrder(true)
                   try {
-                    // build payload
-                    const papers = paperItems.map<OrderPaper>((p) => {
-                      const deadlineIso = p.deadline ? new Date(p.deadline).toISOString() : undefined
+                    // Build order data payload
+                    const papers = paperItems.map((p) => {
+                      // Convert deadline to ISO 8601 format with timezone
+                      let deadlineIso: string | undefined
+                      if (p.deadline) {
+                        // If deadline is just a date (YYYY-MM-DD), convert to ISO datetime with timezone
+                        const deadlineDate = new Date(p.deadline)
+                        // Set to end of day in UTC if no time is provided
+                        if (p.deadline.length === 10) {
+                          deadlineDate.setUTCHours(23, 59, 59, 999)
+                        }
+                        deadlineIso = deadlineDate.toISOString()
+                      }
+
                       return {
                         service_type: p.service || 'Essay Writing',
                         academic_level: mapAcademicLevel(p.level),
@@ -592,7 +665,7 @@ export default function CheckoutPage() {
                       }
                     })
 
-                    const payload = {
+                    const orderData = {
                       first_name: firstName || '',
                       last_name: lastName || '',
                       email: email || '',
@@ -600,18 +673,70 @@ export default function CheckoutPage() {
                       papers,
                     }
 
-                    const res = await createOrder(payload)
-                    toast.success('Order created successfully')
-                    // Extract order id from response
-                    const orderId = res?.id || res?.data?.id || (res?.data && res.data[0] && res.data[0].id)
-                    if (orderId) {
-                      setTimeout(() => { window.location.href = `/order/${orderId}` }, 700)
+                    // Create FormData for multipart/form-data request
+                    const formData = new FormData()
+                    formData.append('order_data', JSON.stringify(orderData))
+
+                    // Collect all files and create file mapping
+                    const allFiles: File[] = []
+                    const fileMapping: Record<string, number[]> = {}
+                    let globalFileIndex = 0
+
+                    paperItems.forEach((paper, paperIndex) => {
+                      if (paper.uploadedFiles && paper.uploadedFiles.length > 0) {
+                        const fileIndices: number[] = []
+                        paper.uploadedFiles.forEach((file) => {
+                          allFiles.push(file)
+                          fileIndices.push(globalFileIndex)
+                          globalFileIndex++
+                        })
+                        if (fileIndices.length > 0) {
+                          fileMapping[String(paperIndex)] = fileIndices
+                        }
+                      }
+                    })
+
+                    // Add files to FormData
+                    allFiles.forEach((file) => {
+                      formData.append('files', file)
+                    })
+
+                    // Add file mapping if there are files
+                    if (Object.keys(fileMapping).length > 0) {
+                      formData.append('file_mapping', JSON.stringify(fileMapping))
+                    }
+
+                    // Call the order creation endpoint
+                    const response = await fetch(`${BACKEND_BASE_URL}/api/v1/orders`, {
+                      method: 'POST',
+                      body: formData,
+                      // Don't set Content-Type header - browser will set it with boundary for multipart/form-data
+                    })
+
+                    if (!response.ok) {
+                      let errorData: { detail?: string }
+                      try {
+                        errorData = await response.json()
+                      } catch {
+                        const errorText = await response.text()
+                        errorData = { detail: errorText }
+                      }
+                      throw new Error(errorData.detail || `Failed to create order: ${response.status}`)
+                    }
+
+                    const orderResult = await response.json()
+
+                    // Redirect to checkout URL if available
+                    if (orderResult.checkout_url) {
+                      window.location.href = orderResult.checkout_url
+                      return
                     } else {
-                      // fallback
-                      setTimeout(() => { window.location.href = '/order' }, 700)
+                      throw new Error('Order created but no checkout URL returned. Please contact support.')
                     }
                   } catch (err: any) {
-                    toast.error(err?.message || 'Failed to create order')
+                    // If order creation fails, show an error and keep user on checkout page
+                    console.error('Order creation error', err)
+                    toast.error(err?.message || 'Failed to create order. Please try again or contact support.')
                   } finally {
                     setSubmittingOrder(false)
                   }
@@ -621,9 +746,11 @@ export default function CheckoutPage() {
                     ? "bg-red-600 hover:bg-red-700 text-white"
                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
-                >
-                <Lock size={20} className="mr-2" />
-                {submittingOrder ? 'Placing order...' : 'Place Order'}
+              >
+                <span className="flex items-center justify-center gap-3">
+                  {submittingOrder ? <span className="ee-loader" aria-hidden="true" /> : <Lock size={20} />}
+                  <span>{submittingOrder ? "Placing order..." : "Place Order"}</span>
+                </span>
               </Button>
             </Card>
           </div>

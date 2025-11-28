@@ -117,11 +117,67 @@
 }
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+
+  button {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  input,
+  textarea,
+  select {
+    background-color: #ffffff;
+    color: #000000;
+    border-color: var(--border);
+  }
+
+  input:disabled,
+  textarea:disabled,
+  select:disabled {
+    background-color: #f4f4f5;
+    color: #71717a;
+  }
+
+  ::placeholder {
+    color: #52525b;
+    opacity: 1;
+  }
+
+  .dark .text-gray-700,
+  .dark .text-gray-800,
+  .dark .text-gray-900 {
+    color: var(--foreground);
+  }
+
+  .dark .text-gray-500,
+  .dark .text-gray-600 {
+    color: var(--muted-foreground);
+  }
+
+  .dark .bg-white,
+  .dark .bg-gray-50,
+  .dark .bg-gray-100 {
+    background-color: var(--card);
+  }
+
+  .dark .border-gray-200,
+  .dark .border-gray-300 {
+    border-color: var(--border);
   }
 }
 
@@ -129,5 +185,35 @@
 @layer utilities {
   .carousel-transition {
     @apply transition-all duration-700 ease-in-out;
+  }
+
+  .numeric-input {
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+  }
+
+  .ee-loader {
+    width: 16px;
+    height: 16px;
+    border-radius: 9999px;
+    background-color: #ffffff;
+    box-shadow: 32px 0 #ffffff, -32px 0 #ffffff;
+    position: relative;
+    animation: ee-flash 0.5s ease-out infinite alternate;
+  }
+
+  @keyframes ee-flash {
+    0% {
+      background-color: #ffffff22;
+      box-shadow: 32px 0 #ffffff22, -32px 0 #ffffff;
+    }
+    50% {
+      background-color: #ffffff;
+      box-shadow: 32px 0 #ffffff22, -32px 0 #ffffff22;
+    }
+    100% {
+      background-color: #ffffff22;
+      box-shadow: 32px 0 #ffffff, -32px 0 #ffffff22;
+    }
   }
 }
