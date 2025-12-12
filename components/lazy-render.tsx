@@ -9,6 +9,7 @@ type LazyRenderProps = {
   placeholder?: ReactNode
   className?: string
   placeholderClassName?: string
+  id?: string
 }
 
 /**
@@ -22,6 +23,7 @@ export function LazyRender({
   placeholder,
   className,
   placeholderClassName,
+  id,
 }: LazyRenderProps) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const [hasIntersected, setHasIntersected] = useState(false)
@@ -58,6 +60,6 @@ export function LazyRender({
     <div className={`w-full rounded-3xl bg-gray-100/70 animate-pulse ${placeholderClassName}`} aria-hidden="true" />
   ) : null
 
-  return <div ref={containerRef} className={className}>{hasIntersected ? children : placeholder ?? defaultPlaceholder}</div>
+  return <div id={id} ref={containerRef} className={className}>{hasIntersected ? children : placeholder ?? defaultPlaceholder}</div>
 }
 

@@ -365,13 +365,13 @@ export default function Home() {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#home" className="text-gray-700 hover:text-red-600 transition">
+              <a href="#home" onClick={(e) => { e.preventDefault(); document.getElementById("home")?.scrollIntoView({ behavior: "smooth" }) }} className="text-gray-700 hover:text-red-600 transition">
                 Home
               </a>
-              <a href="#services" className="text-gray-700 hover:text-red-600 transition">
+              <a href="#services" onClick={(e) => { e.preventDefault(); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }) }} className="text-gray-700 hover:text-red-600 transition">
                 Services
               </a>
-              <a href="#contact" className="text-gray-700 hover:text-red-600 transition">
+              <a href="#contact" onClick={(e) => { e.preventDefault(); document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }) }} className="text-gray-700 hover:text-red-600 transition">
                 Contact Us
               </a>
               <div className="flex items-center gap-4">
@@ -387,13 +387,13 @@ export default function Home() {
           {/* Mobile Menu */}
           {mobileMenuOpen && (
             <div className="md:hidden pb-4 space-y-2">
-              <a href="#home" className="block text-gray-700 hover:text-red-600 py-2">
+              <a href="#home" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); document.getElementById("home")?.scrollIntoView({ behavior: "smooth" }) }} className="block text-gray-700 hover:text-red-600 py-2">
                 Home
               </a>
-              <a href="#services" className="block text-gray-700 hover:text-red-600 py-2">
+              <a href="#services" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }) }} className="block text-gray-700 hover:text-red-600 py-2">
                 Services
               </a>
-              <a href="#contact" className="block text-gray-700 hover:text-red-600 py-2">
+              <a href="#contact" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }) }} className="block text-gray-700 hover:text-red-600 py-2">
                 Contact Us
               </a>
 
@@ -806,8 +806,8 @@ export default function Home() {
       </LazyRender>
 
       {/* Contact Us Section */}
-      <LazyRender placeholderClassName="min-h-[640px]">
-        <section id="contact" className="py-20 bg-gray-100">
+      <LazyRender placeholderClassName="min-h-[640px]" id="contact">
+        <section className="py-20 bg-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 gap-12 items-start">
               {/* Left Side - Contact Info */}
