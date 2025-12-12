@@ -604,16 +604,11 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 transition-all duration-700 ease-in-out">
                 {visibleServices.map((service, idx) => {
                   const Icon = service.icon
-                  const isFocused = idx === 0
                   return (
                     <Card
                       key={idx}
                       className={`p-6 rounded-2xl transition-all duration-700 ease-in-out cursor-pointer flex flex-col bg-red-50 text-gray-900 border-red-200 hover:border-red-400 hover:shadow-md h-80 w-full ${
                         idx > 0 ? "hidden md:flex" : "flex"
-                      } ${
-                        isFocused
-                          ? "opacity-100 scale-100 border-2 border-red-600 shadow-lg"
-                          : "opacity-50 scale-95 hover:opacity-75"
                       }`}
                     >
                       <Icon className="w-12 h-12 mb-4 text-red-600 shrink-0" />
