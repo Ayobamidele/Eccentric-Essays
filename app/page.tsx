@@ -5,7 +5,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  X,
   Star,
   CheckCircle2,
   Lock,
@@ -32,112 +31,112 @@ import { LazyRender } from "@/components/lazy-render"
 const SERVICES = [
   {
     title: "Essay Writing",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Original, research-backed essays tailored to your brief.",
     icon: PenTool,
   },
   {
     title: "Thesis Writing",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Structured theses with clear argument and citations.",
     icon: BookOpen,
   },
   {
     title: "Dissertation Writing",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Full dissertation support from proposal to conclusion.",
     icon: FileText,
   },
   {
     title: "Research Proposal",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Concise, fundable proposals with clear methodology.",
     icon: Lightbulb,
   },
   {
     title: "Literature Review Writing",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Focused reviews synthesising key sources and gaps.",
     icon: BookOpen,
   },
   {
     title: "Data Analysis",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Accurate statistical analysis and clear interpretation.",
     icon: BarChart3,
   },
   {
     title: "Statistics Presentation",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Readable charts and tables to highlight key findings.",
     icon: BarChart3,
   },
   {
     title: "Dissertation Supervisor",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Expert supervision and milestone guidance.",
     icon: GraduationCap,
   },
   {
     title: "Assignment Help",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Fast, on-brief support for individual assignments.",
     icon: FileText,
   },
   {
     title: "Business Plans",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Clear, investor-ready business plans.",
     icon: Briefcase,
   },
   {
     title: "Academic Posters",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Visually effective posters summarising your study.",
     icon: PenTool,
   },
   {
     title: "Articles",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Well-referenced articles for journals or blogs.",
     icon: FileText,
   },
   {
     title: "Case Study",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Detailed case analyses with evidence and insight.",
     icon: BookOpen,
   },
   {
     title: "Custom Coursework Writing",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Tailored coursework written to your specifications.",
     icon: GraduationCap,
   },
   {
     title: "Reports",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Professional reports with clear structure and data.",
     icon: FileText,
   },
   {
     title: "Proofreading and Editing",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Polish language, style, and academic tone.",
     icon: PenTool,
   },
   {
     title: "Dissertation Results",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Clear presentation and interpretation of results.",
     icon: FileText,
   },
   {
     title: "Dissertation Methodology",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Robust methodology chapters tailored to your study.",
     icon: FileText,
   },
   {
     title: "Dissertation Introduction",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Concise, compelling introductions that frame your research.",
     icon: FileText,
   },
   {
     title: "Dissertation Findings",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Organised findings with clear narrative flow.",
     icon: FileText,
   },
   {
     title: "Dissertation Data Analysis",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Thorough analysis using appropriate statistical methods.",
     icon: BarChart3,
   },
   {
     title: "Dissertation Conclusion",
-    description: "Our research based and goal driven approach in consulting lays the perfect foundation & strategy",
+    description: "Concise conclusions linking findings to objectives.",
     icon: FileText,
   },
 ]
@@ -421,11 +420,11 @@ export default function Home() {
               <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-balance">
                 Stop the Stress. Start the Success. ✨
               </h1>
-              <p className="text-xl text-red-100 mb-4 text-balance">
+              <p className="text-sm md:text-sm text-red-100 mb-4 text-balance">
                 Imagine handing in every assignment with total confidence. That's the power of having Eccentric Essays
                 on your team.
               </p>
-              <p className="text-lg text-red-100 mb-8 text-balance">
+              <p className="text-sm md:text-sm text-red-100 mb-8 text-balance">
                 That midnight panic, the blank screen stare, the fear of a looming deadline... It ends now.
               </p>
               <Button onClick={handleOrderNow} className="bg-white text-red-600 hover:bg-gray-100 text-lg px-8 py-6">
@@ -613,7 +612,7 @@ export default function Home() {
                     >
                       <Icon className="w-12 h-12 mb-4 text-red-600 shrink-0" />
                       <h3 className="text-lg font-bold mb-3 text-gray-900 line-clamp-2">{service.title}</h3>
-                      <p className="text-sm grow text-gray-600 line-clamp-3">{service.description}</p>
+                      <p className="text-sm grow text-gray-600 line-clamp-2">{service.description}</p>
                     </Card>
                   )
                 })}
@@ -662,7 +661,6 @@ export default function Home() {
                 <p className="text-gray-600 mb-6">
                   Join thousands of satisfied students who have improved their grades with our essay writing service.
                 </p>
-                <Button className="bg-gray-900 hover:bg-gray-800 text-white">See all testimonials</Button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {TESTIMONIALS.map((testimonial, idx) => (
@@ -755,28 +753,60 @@ export default function Home() {
         </section>
       </LazyRender>
 
-      {/* CTA Section - New section with powerful call-to-action */}
+      {/* CTA Section - Redesigned */}
       <LazyRender placeholderClassName="min-h-[420px]">
         <section className="py-20 bg-linear-to-br from-red-600 to-red-700 text-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 leading-tight text-balance">
-              Don't just keep coping. Start excelling.
-            </h2>
-            <p className="text-xl text-red-100 mb-8 text-balance">You have two choices:</p>
-            <div className="space-y-4 mb-12 text-lg text-red-100">
-              <p>1. Keep battling the same stress cycle, hoping for the best.</p>
-              <p>
-                2. Make a powerful change. Click the button below, and in minutes, you'll be on the path to your best
-                semester yet.
-              </p>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+              {/* Left: Headline + benefits */}
+              <div className="md:col-span-7 text-center md:text-left">
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4">Stop stressing. Start submitting.</h2>
+                <p className="text-sm md:text-base text-red-100 max-w-2xl mb-6">
+                  Get a research-backed, professionally written paper that matches your brief — on time, every time.
+                </p>
+
+                <div className="flex flex-col sm:flex-row sm:items-start sm:gap-6 gap-3 justify-center md:justify-start mb-6">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-white/90" />
+                    <span className="text-sm md:text-base text-red-100">Plagiarism-free work</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Users className="w-5 h-5 text-white/90" />
+                    <span className="text-sm md:text-base text-red-100">Verified expert writers</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Shield className="w-5 h-5 text-white/90" />
+                    <span className="text-sm md:text-base text-red-100">Secure & confidential</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 gap-3 justify-center md:justify-start">
+                  <Button onClick={handleOrderNow} className="bg-white text-red-600 hover:bg-gray-100 px-6 py-3 text-base md:text-lg font-semibold w-full sm:w-auto">
+                    Order Your Expert — Start Now
+                  </Button>
+                  <a href="#contact" className="inline-block text-white/95 border border-white/30 hover:border-white rounded-md px-5 py-3 text-sm md:text-base text-center w-full sm:w-auto">
+                    Talk to Support
+                  </a>
+                </div>
+              </div>
+
+              {/* Right: Card with short bullets and testimonial */}
+              <div className="md:col-span-5">
+                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 text-white border border-white/10">
+                  <h3 className="text-lg font-bold mb-3">Fast & reliable — how it works</h3>
+                  <ul className="space-y-2 mb-4 text-sm md:text-base text-red-100">
+                    <li className="flex items-start gap-3"><span className="mt-0.5 text-white/90">•</span> Place your order in minutes</li>
+                    <li className="flex items-start gap-3"><span className="mt-0.5 text-white/90">•</span> Get matched with a specialist</li>
+                    <li className="flex items-start gap-3"><span className="mt-0.5 text-white/90">•</span> Receive drafts and final paper on time</li>
+                  </ul>
+
+                  <div className="mt-2">
+                    <p className="text-sm text-red-100/90 italic">“Delivered exactly to the brief — saved my semester.”</p>
+                    <p className="font-semibold mt-3">— A satisfied student</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <Button className="bg-white text-red-600 hover:bg-gray-100 text-base md:text-lg px-4 md:px-8 md:py-6 w-full md:w-auto mb-0 py-[18px]">
-              <a href="/checkout" className="no-underline">
-                Click Here to Get Your Expert & Unlock Your A!
-              </a>
-            </Button>
-            <p className="text-xl text-red-100">Your future self will thank you.</p>
-            <p className="text-2xl font-bold mt-6">Eccentric Essays. Your Grade. Our Passion.</p>
           </div>
         </section>
       </LazyRender>
@@ -788,11 +818,15 @@ export default function Home() {
             <h2 className="text-4xl font-bold text-center mb-16 text-gray-900">Frequently asked questions?</h2>
             <Accordion type="single" collapsible className="space-y-4">
               {FAQS.map((faq, idx) => (
-                <AccordionItem key={idx} value={`item-${idx}`} className="border border-gray-200 rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-red-600">
+                <AccordionItem
+                  key={idx}
+                  value={`item-${idx}`}
+                  className="border border-gray-200 rounded-lg px-6 overflow-hidden"
+                >
+                  <AccordionTrigger className="text-left font-semibold text-gray-900 no-underline hover:no-underline py-4 flex items-center justify-between">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-gray-600">{faq.answer}</AccordionContent>
+                  <AccordionContent className="text-gray-600 border-t border-gray-100 pt-4">{faq.answer}</AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
@@ -808,7 +842,7 @@ export default function Home() {
               {/* Left Side - Contact Info */}
               <div>
                 <h2 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900 leading-tight">
-                  Get in <span className="text-gray-400">—</span>
+                  Get in <span className="text-primary-foreground">—</span>
                   <br />
                   touch with us
                 </h2>
@@ -891,49 +925,33 @@ export default function Home() {
       <LazyRender placeholderClassName="min-h-[360px]">
         <footer className="bg-white border-t border-gray-200 py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-12">
               {/* Brand Column */}
               <div>
                 <a href="/" className="inline-block mb-4 hover:opacity-80 transition">
-                  <img src="/eccentric-essays-logo.png" alt="Eccentric Essays" className="h-20 w-auto" />
+                  <img src="/eccentric-essays-logo.png" alt="Eccentric Essays"  />
                 </a>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  Start by ordering your essay today and experience the quality that sets us apart from other writing
-                  services.
-                </p>
+                
               </div>
 
-              {/* Services Column */}
-              <div>
+              {/* Services Column (wider) */}
+              <div className="md:col-span-3">
                 <h4 className="text-gray-900 font-semibold mb-6">Services</h4>
-                <ul className="space-y-3 text-sm text-gray-600">
-                  <li>
-                    <a href="#services" className="hover:text-gray-900 transition">
-                      Essay Writing
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#services" className="hover:text-gray-900 transition">
-                      Thesis Writing
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#services" className="hover:text-gray-900 transition">
-                      Dissertation Writing
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#services" className="hover:text-gray-900 transition">
-                      Research Proposal
-                    </a>
-                  </li>
+                <ul className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm md:text-base text-gray-600">
+                  {SERVICES.map((s) => (
+                    <li key={s.title}>
+                      <a href="#services" className="hover:text-gray-900 transition block">
+                        {s.title}
+                      </a>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
               {/* Company Column */}
               <div>
                 <h4 className="text-gray-900 font-semibold mb-6">Company</h4>
-                <ul className="space-y-3 text-sm text-gray-600">
+                <ul className="space-y-3 text-sm md:text-base text-gray-600">
                   <li>
                     <a href="#home" className="hover:text-gray-900 transition">
                       About us
@@ -947,11 +965,6 @@ export default function Home() {
                   <li>
                     <a href="#faq" className="hover:text-gray-900 transition">
                       FAQs
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-gray-900 transition">
-                      Blog
                     </a>
                   </li>
                 </ul>
@@ -971,16 +984,17 @@ export default function Home() {
                       <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.338-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                     </svg>
                   </a>
-                  <a
-                    href="#"
-                    className="text-gray-600 hover:text-gray-900 transition"
-                    aria-label="Follow us on Twitter"
-                    title="Twitter"
-                  >
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 00-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 7-7 7-7a10.6 10.6 0 01-9-5.5z" />
-                    </svg>
-                  </a>
+                      <a
+                        href="https://x.com/"
+                        className="text-gray-600 hover:text-gray-900 transition"
+                        aria-label="Follow us on X"
+                        title="X"
+                        dangerouslySetInnerHTML={{ __html: `
+                          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
+                            <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z" />
+                          </svg>
+                        ` }}
+                      />
                 </div>
               </div>
             </div>
