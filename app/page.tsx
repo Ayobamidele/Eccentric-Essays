@@ -854,7 +854,7 @@ export default function Home() {
                 <div className="space-y-6 mb-8">
                   <div>
                     <p className="text-gray-600 font-semibold mb-2">Email:</p>
-                    <p className="text-gray-900 font-bold text-lg">hello@eccentricessays.com</p>
+                    <p className="text-gray-900 font-bold text-lg">kossyakabogu0007@gmail.com</p>
                   </div>
                   <div>
                     <p className="text-gray-600 font-semibold mb-2">Phone:</p>

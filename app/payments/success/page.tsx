@@ -50,7 +50,7 @@ export default function PaymentSuccessPage() {
             <div className="flex justify-center">
               <Mail className="w-16 h-16 text-red-600" />
             </div>
-            
+
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Please check your email to confirm your order
@@ -73,7 +73,7 @@ export default function PaymentSuccessPage() {
             </div>
 
             <div className="pt-4">
-              <a href="mailto:hello@eccentricessays.com?subject=Order Issue Report" className="block w-full">
+              <a href="mailto:kossyakabogu0007@gmail.com?subject=Order Issue Report" className="block w-full">
                 <Button variant="outline" className="w-full py-6 text-lg font-semibold">
                   Report an Issue
                 </Button>
