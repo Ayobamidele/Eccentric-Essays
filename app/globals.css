@@ -11,13 +11,15 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.55 0.22 29); /* Vibrant red */
+  --primary: oklch(0.55 0.22 29);
+  /* Vibrant red */
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.55 0.22 29);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.55 0.22 29); /* Red accent */
+  --accent: oklch(0.55 0.22 29);
+  /* Red accent */
   --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
@@ -211,13 +213,33 @@
       background-color: #ffffff22;
       box-shadow: 32px 0 #ffffff22, -32px 0 #ffffff;
     }
+
     50% {
       background-color: #ffffff;
       box-shadow: 32px 0 #ffffff22, -32px 0 #ffffff22;
     }
+
     100% {
       background-color: #ffffff22;
       box-shadow: 32px 0 #ffffff, -32px 0 #ffffff22;
     }
+  }
+
+  @keyframes infinite-scroll {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-infinite-scroll {
+    animation: infinite-scroll 10s linear infinite;
+  }
+
+  .animate-infinite-scroll:hover {
+    animation-play-state: paused;
   }
 }

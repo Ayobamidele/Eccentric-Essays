@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from "react"
 import {
-  ChevronLeft,
+  X,
   ChevronRight,
   Menu,
   Star,
@@ -268,7 +268,6 @@ const SCROLL_ADVANCE_THRESHOLD = 300
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [servicesIndex, setServicesIndex] = useState(0)
   const [selectedService, setSelectedService] = useState("Essay Writing")
   const [selectedLevel, setSelectedLevel] = useState("BA/BSC")
   const [pages, setPages] = useState(1)
@@ -278,51 +277,6 @@ export default function Home() {
   const lastScrollYRef = useRef(0)
   const scrollTickingRef = useRef(false)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (scrollTickingRef.current) return
-
-      scrollTickingRef.current = true
-      window.requestAnimationFrame(() => {
-        const currentScrollY = window.scrollY
-        const delta = currentScrollY - lastScrollYRef.current
-
-        if (delta > SCROLL_ADVANCE_THRESHOLD) {
-          setServicesIndex((prev) => (prev + 1) % SERVICES.length)
-          lastScrollYRef.current = currentScrollY
-        } else if (delta < -SCROLL_ADVANCE_THRESHOLD) {
-          lastScrollYRef.current = currentScrollY
-        }
-
-        scrollTickingRef.current = false
-      })
-    }
-
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setServicesIndex((prev) => (prev + 1) % SERVICES.length)
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const visibleServices = useMemo(() => {
-    return Array.from({ length: VISIBLE_SERVICE_COUNT }, (_, idx) =>
-      SERVICES[(servicesIndex + idx) % SERVICES.length],
-    )
-  }, [servicesIndex])
-
-  const nextService = () => {
-    setServicesIndex((prev) => (prev + 1) % SERVICES.length)
-  }
-
-  const prevService = () => {
-    setServicesIndex((prev) => (prev - 1 + SERVICES.length) % SERVICES.length)
-  }
-
   const currentPrice = useMemo(() => {
     const level = ACADEMIC_LEVELS.find((l) => l.label === selectedLevel)
     return (level?.price || 20.5) * pages
@@ -331,21 +285,21 @@ export default function Home() {
   const handleOrderNow = () => {
     // Create paper details
     const params = new URLSearchParams()
-    
+
     // Add order parameters
     params.append("service", selectedService)
     params.append("level", selectedLevel)
     params.append("pages", pages.toString())
     params.append("deadline", selectedDate)
-    
-  // Add paper details
+
+    // Add paper details
     params.append("paperFormat", selectedPaperFormat)
     params.append("customFormat", selectedPaperFormat === "Other" ? customPaperFormat : "")
     params.append("paper_format_other", selectedPaperFormat === "Other" ? customPaperFormat : "")
     params.append("subject", "")
     params.append("topics", "")
     params.append("additionalInfo", "")
-    
+
     // Navigate to checkout
     window.location.href = `/checkout?${params.toString()}`
   }
@@ -378,24 +332,49 @@ export default function Home() {
             </div>
 
             {/* Mobile Menu Button */}
-            <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            <button className="md:hidden p-2 text-gray-900 bg-transparent hover:bg-gray-100 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden pb-4 space-y-2">
-              <a href="#home" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); document.getElementById("home")?.scrollIntoView({ behavior: "smooth" }) }} className="block text-gray-700 hover:text-red-600 py-2">
-                Home
-              </a>
-              <a href="#services" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); document.getElementById("services")?.scrollIntoView({ behavior: "smooth" }) }} className="block text-gray-700 hover:text-red-600 py-2">
-                Services
-              </a>
-              <a href="#contact" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }) }} className="block text-gray-700 hover:text-red-600 py-2">
-                Contact Us
-              </a>
-
+            <div className="md:hidden absolute top-16 left-0 right-0 bg-white border-b border-gray-200 shadow-xl z-50">
+              <div className="px-4 py-6 space-y-2">
+                <a
+                  href="#home"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setMobileMenuOpen(false)
+                    document.getElementById("home")?.scrollIntoView({ behavior: "smooth" })
+                  }}
+                  className="block px-4 py-3 text-lg font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                >
+                  Home
+                </a>
+                <a
+                  href="#services"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setMobileMenuOpen(false)
+                    document.getElementById("services")?.scrollIntoView({ behavior: "smooth" })
+                  }}
+                  className="block px-4 py-3 text-lg font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                >
+                  Services
+                </a>
+                <a
+                  href="#contact"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setMobileMenuOpen(false)
+                    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+                  }}
+                  className="block px-4 py-3 text-lg font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                >
+                  Contact Us
+                </a>
+              </div>
             </div>
           )}
         </div>
@@ -433,18 +412,18 @@ export default function Home() {
             </div>
 
             <div className="flex justify-center">
-              <div className="bg-white rounded-2xl p-8 shadow-2xl text-gray-900 w-full max-w-md">
-                <h3 className="text-2xl font-bold mb-6">Calculate the price of your order:</h3>
-                <div className="space-y-4">
+              <div className="bg-white rounded-2xl p-5 md:p-8 shadow-2xl text-gray-900 w-full max-w-md">
+                <h3 className="text-lg md:text-2xl font-bold mb-3 md:mb-6">Calculate the price of your order:</h3>
+                <div className="space-y-2.5 md:space-y-4">
                   <div>
-                    <label htmlFor="serviceType" className="block text-sm font-medium mb-2">
+                    <label htmlFor="serviceType" className="block text-[10px] md:text-sm font-medium mb-1 md:mb-2">
                       Service Type
                     </label>
                     <select
                       id="serviceType"
                       value={selectedService}
                       onChange={(e) => setSelectedService(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                      className="w-full border border-gray-300 rounded-lg px-2.5 md:px-4 py-1.5 md:py-3 text-xs md:text-base focus:outline-none focus:ring-2 focus:ring-red-600"
                     >
                       <option>Essay Writing</option>
                       <option>Thesis Writing</option>
@@ -470,113 +449,117 @@ export default function Home() {
                       <option>Dissertation Conclusion</option>
                     </select>
                   </div>
-                  <div>
-                    <label htmlFor="academicLevel" className="block text-sm font-medium mb-2">
-                      Academic Level
-                    </label>
-                    <select
-                      id="academicLevel"
-                      value={selectedLevel}
-                      onChange={(e) => setSelectedLevel(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
-                    >
-                      {ACADEMIC_LEVELS.map((level) => (
-                        <option key={level.label} value={level.label}>
-                          {level.label} - £{level.price.toFixed(2)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="pageCount" className="block text-sm font-medium mb-2">
-                      Number of pages
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => setPages(Math.max(1, pages - 1))}
-                        className="bg-red-600 text-white w-10 h-10 rounded-lg hover:bg-red-700"
+                  <div className="grid grid-cols-2 gap-2 md:gap-4">
+                    <div>
+                      <label htmlFor="academicLevel" className="block text-[10px] md:text-sm font-medium mb-1 md:mb-2">
+                        Level
+                      </label>
+                      <select
+                        id="academicLevel"
+                        value={selectedLevel}
+                        onChange={(e) => setSelectedLevel(e.target.value)}
+                        className="w-full border border-gray-300 rounded-lg px-2 md:px-4 py-1.5 md:py-3 text-xs md:text-base focus:outline-none focus:ring-2 focus:ring-red-600"
                       >
-                        −
-                      </button>
-                      <input
-                        id="pageCount"
-                        type="number"
-                        value={pages}
-                        onChange={(e) => setPages(Math.max(1, Number.parseInt(e.target.value) || 1))}
-                        className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-center"
-                      />
-                      <button
-                        onClick={() => setPages(pages + 1)}
-                        className="bg-red-600 text-white w-10 h-10 rounded-lg hover:bg-red-700"
-                      >
-                        +
-                      </button>
+                        {ACADEMIC_LEVELS.map((level) => (
+                          <option key={level.label} value={level.label}>
+                            {level.label}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">{WORD_COUNT_MAP[pages] || 250} words</p>
-                  </div>
-                  <div>
-                    <label htmlFor="deadline" className="block text-sm font-medium mb-2">
-                      Deadline
-                    </label>
-                    <div className="relative">
-                      <Calendar className="absolute left-3 top-3.5 text-gray-400" size={20} />
-                      <input
-                        id="deadline"
-                        type="date"
-                        value={selectedDate}
-                        onChange={(e) => setSelectedDate(e.target.value)}
-                        className="w-full border border-gray-300 rounded-lg px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-red-600"
-                      />
+                    <div>
+                      <label htmlFor="paperFormat" className="block text-[10px] md:text-sm font-medium mb-1 md:mb-2">
+                        Format
+                      </label>
+                      <select
+                        id="paperFormat"
+                        value={selectedPaperFormat}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          setSelectedPaperFormat(value)
+                          if (value !== "Other") {
+                            setCustomPaperFormat("")
+                          }
+                        }}
+                        className="w-full border border-gray-300 rounded-lg px-2 md:px-4 py-1.5 md:py-3 text-xs md:text-base focus:outline-none focus:ring-2 focus:ring-red-600"
+                      >
+                        {PAPER_FORMATS.map((fmt) => (
+                          <option key={fmt} value={fmt}>
+                            {fmt}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
-                  <div>
-                    <label htmlFor="paperFormat" className="block text-sm font-medium mb-2">
-                      Paper Format
-                    </label>
-                    <select
-                      id="paperFormat"
-                      value={selectedPaperFormat}
-                      onChange={(e) => {
-                        const value = e.target.value
-                        setSelectedPaperFormat(value)
-                        if (value !== "Other") {
-                          setCustomPaperFormat("")
-                        }
-                      }}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
-                    >
-                      {PAPER_FORMATS.map((fmt) => (
-                        <option key={fmt} value={fmt}>
-                          {fmt}
-                        </option>
-                      ))}
-                    </select>
-                    {selectedPaperFormat === "Other" && (
-                      <div className="mt-3">
-                        <label htmlFor="customPaperFormat" className="block text-sm font-medium mb-2">
-                          Specify paper format
-                        </label>
+                  <div className="grid grid-cols-2 gap-2 md:gap-4">
+                    <div>
+                      <label htmlFor="pageCount" className="block text-[10px] md:text-sm font-medium mb-1 md:mb-2">
+                        Pages
+                      </label>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => setPages(Math.max(1, pages - 1))}
+                          className="bg-red-600 text-white w-7 h-7 md:w-10 md:h-10 rounded-lg hover:bg-red-700 shrink-0 flex items-center justify-center text-sm"
+                        >
+                          −
+                        </button>
                         <input
-                          id="customPaperFormat"
-                          type="text"
-                          value={customPaperFormat}
-                          onChange={(e) => setCustomPaperFormat(e.target.value)}
-                          placeholder="Enter your desired citation style"
-                          className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
+                          id="pageCount"
+                          type="number"
+                          value={pages}
+                          onChange={(e) => setPages(Math.max(1, Number.parseInt(e.target.value) || 1))}
+                          className="w-full border border-gray-300 rounded-lg py-1 md:py-2 text-center text-xs md:text-base"
+                        />
+                        <button
+                          onClick={() => setPages(pages + 1)}
+                          className="bg-red-600 text-white w-7 h-7 md:w-10 md:h-10 rounded-lg hover:bg-red-700 shrink-0 flex items-center justify-center text-sm"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <p className="text-[9px] md:text-xs text-gray-500 mt-0.5">{WORD_COUNT_MAP[pages] || 250} words</p>
+                    </div>
+                    <div>
+                      <label htmlFor="deadline" className="block text-[10px] md:text-sm font-medium mb-1 md:mb-2">
+                        Deadline
+                      </label>
+                      <div className="relative">
+                        <Calendar className="absolute left-2 top-2 md:left-3 md:top-3.5 text-gray-400" size={12} />
+                        <input
+                          id="deadline"
+                          type="date"
+                          value={selectedDate}
+                          onChange={(e) => setSelectedDate(e.target.value)}
+                          className="w-full border border-gray-300 rounded-lg px-2 md:px-4 py-1.5 md:py-3 pl-7 md:pl-10 text-xs md:text-base focus:outline-none focus:ring-2 focus:ring-red-600"
                         />
                       </div>
-                    )}
+                    </div>
                   </div>
-                  <div className="border-t pt-4 mt-4">
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="text-gray-600">
-                        £{(ACADEMIC_LEVELS.find((l) => l.label === selectedLevel)?.price || 20.5).toFixed(2)} per page
+                  {selectedPaperFormat === "Other" && (
+                    <div className="mt-1.5">
+                      <label htmlFor="customPaperFormat" className="block text-[10px] md:text-sm font-medium mb-1 md:mb-2">
+                        Specify format
+                      </label>
+                      <input
+                        id="customPaperFormat"
+                        type="text"
+                        value={customPaperFormat}
+                        onChange={(e) => setCustomPaperFormat(e.target.value)}
+                        placeholder="Citation style"
+                        className="w-full border border-gray-300 rounded-lg px-2.5 md:px-4 py-1.5 md:py-3 text-xs md:text-base focus:outline-none focus:ring-2 focus:ring-red-600"
+                      />
+                    </div>
+                  )}
+                  <div className="border-t pt-2.5 md:pt-4 mt-2.5 md:mt-4">
+                    <div className="flex justify-between items-center mb-2.5 md:mb-4">
+                      <span className="text-[10px] md:text-sm text-gray-600">
+                        £{(ACADEMIC_LEVELS.find((l) => l.label === selectedLevel)?.price || 20.5).toFixed(2)} / pg
                       </span>
-                      <span className="text-3xl font-bold text-red-600">£{currentPrice.toFixed(2)}</span>
+                      <span className="text-xl md:text-3xl font-bold text-red-600">£{currentPrice.toFixed(2)}</span>
                     </div>
                     <Button
                       onClick={handleOrderNow}
-                      className="w-full bg-red-600 hover:bg-red-700 text-white py-3 text-lg"
+                      className="w-full bg-red-600 hover:bg-red-700 text-white py-2 md:py-3 text-sm md:text-lg"
                     >
                       Order now
                     </Button>
@@ -599,54 +582,23 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="relative px-20">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 transition-all duration-700 ease-in-out">
-                {visibleServices.map((service, idx) => {
+            <div className="relative overflow-hidden py-10">
+              <div className="flex animate-infinite-scroll hover:pause">
+                {[...SERVICES, ...SERVICES].map((service, idx) => {
                   const Icon = service.icon
                   return (
-                    <Card
-                      key={idx}
-                      className={`p-6 rounded-2xl transition-all duration-700 ease-in-out cursor-pointer flex flex-col bg-red-50 text-gray-900 border-red-200 hover:border-red-400 hover:shadow-md h-80 w-full ${
-                        idx > 0 ? "hidden md:flex" : "flex"
-                      }`}
-                    >
-                      <Icon className="w-12 h-12 mb-4 text-red-600 shrink-0" />
-                      <h3 className="text-lg font-bold mb-3 text-gray-900 line-clamp-2">{service.title}</h3>
-                      <p className="text-sm grow text-gray-600 line-clamp-2">{service.description}</p>
-                    </Card>
+                    <div key={idx} className="flex-none w-[300px] px-4">
+                      <Card
+                        className="p-6 rounded-2xl transition-all duration-300 cursor-pointer flex flex-col bg-red-50 text-gray-900 border-red-200 hover:border-red-400 hover:shadow-lg h-80 w-full"
+                      >
+                        <Icon className="w-12 h-12 mb-4 text-red-600 shrink-0" />
+                        <h3 className="text-lg font-bold mb-3 text-gray-900 line-clamp-2">{service.title}</h3>
+                        <p className="text-sm grow text-gray-600 line-clamp-2">{service.description}</p>
+                      </Card>
+                    </div>
                   )
                 })}
               </div>
-
-              {/* Navigation Arrows */}
-              <button
-                onClick={prevService}
-                className="absolute left-0 top-1/2 -translate-y-1/2 bg-red-600 text-white p-3 rounded-full hover:bg-red-700 transition shadow-lg"
-                aria-label="Previous services"
-              >
-                <ChevronLeft size={24} />
-              </button>
-              <button
-                onClick={nextService}
-                className="absolute right-0 top-1/2 -translate-y-1/2 bg-red-600 text-white p-3 rounded-full hover:bg-red-700 transition shadow-lg"
-                aria-label="Next services"
-              >
-                <ChevronRight size={24} />
-              </button>
-            </div>
-
-            {/* Carousel indicators */}
-            <div className="flex justify-center gap-2 mt-8">
-              {SERVICES.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setServicesIndex(idx)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    idx >= servicesIndex && idx < servicesIndex + VISIBLE_SERVICE_COUNT ? "bg-red-600 w-8" : "bg-gray-300"
-                  }`}
-                  aria-label={`Go to service ${idx + 1}`}
-                />
-              ))}
             </div>
           </div>
         </section>
@@ -929,9 +881,9 @@ export default function Home() {
               {/* Brand Column */}
               <div>
                 <a href="/" className="inline-block mb-4 hover:opacity-80 transition">
-                  <img src="/eccentric-essays-logo.png" alt="Eccentric Essays"  />
+                  <img src="/eccentric-essays-logo.png" alt="Eccentric Essays" />
                 </a>
-                
+
               </div>
 
               {/* Services Column (wider) */}
@@ -984,17 +936,18 @@ export default function Home() {
                       <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.338-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                     </svg>
                   </a>
-                      <a
-                        href="https://x.com/"
-                        className="text-gray-600 hover:text-gray-900 transition"
-                        aria-label="Follow us on X"
-                        title="X"
-                        dangerouslySetInnerHTML={{ __html: `
+                  <a
+                    href="https://x.com/"
+                    className="text-gray-600 hover:text-gray-900 transition"
+                    aria-label="Follow us on X"
+                    title="X"
+                    dangerouslySetInnerHTML={{
+                      __html: `
                           <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
                             <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z" />
                           </svg>
                         ` }}
-                      />
+                  />
                 </div>
               </div>
             </div>

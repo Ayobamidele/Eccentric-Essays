@@ -17,7 +17,7 @@ export default function CheckoutPage() {
   const [selectedLevel, setSelectedLevel] = useState("")
   const [pages, setPages] = useState(1)
   const [selectedDate, setSelectedDate] = useState("")
-  
+
   // Common input classes with forced black text
   const inputClasses = "[&]:text-gray-900 [&::placeholder]:text-gray-500 w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
   const selectClasses = "[&]:text-gray-900 [&>option]:text-gray-900 w-full min-w-0 border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-600"
@@ -86,12 +86,12 @@ export default function CheckoutPage() {
   // Handle URL parameters
   useEffect(() => {
     if (!searchParams) return;
-    
+
     const service = searchParams.get("service") || "Essay Writing"
     const level = searchParams.get("level") || "BA/BSC"
     const pagesParam = searchParams.get("pages") || "1"
     const deadline = searchParams.get("deadline") || ""
-    
+
     setSelectedService(service)
     setSelectedLevel(level)
     setPages(Number.parseInt(pagesParam))
@@ -253,11 +253,19 @@ export default function CheckoutPage() {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <Link href="/" className="flex items-center gap-2 text-red-600 hover:text-red-700 mb-4">
-            <ChevronLeft size={20} />
-            Back to Home
-          </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <Link href="/" className="hover:opacity-80 transition shrink-0">
+                <img src="/eccentric-essays-logo.png" alt="Eccentric Essays" className="h-10 md:h-12 w-auto" />
+              </Link>
+              <div className="h-8 w-px bg-gray-200 hidden md:block"></div>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Checkout</h1>
+            </div>
+            <Link href="/" className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition text-sm font-medium">
+              <ChevronLeft size={18} />
+              Back to Home
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -282,46 +290,46 @@ export default function CheckoutPage() {
                   />
                   {errors.firstName && <p className="text-sm text-red-600 mt-1">{errors.firstName}</p>}
                 </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
-                    <input
-                      type="text"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      placeholder="Enter your last name"
-                      className={inputClasses}
-                    />
-                    {errors.lastName && <p className="text-sm text-red-600 mt-1">{errors.lastName}</p>}
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email"
-                      className={inputClasses}
-                    />
-                    {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email}</p>}
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="Enter your phone number"
-                      className={inputClasses}
-                    />
-                    {errors.phone && <p className="text-sm text-red-600 mt-1">{errors.phone}</p>}
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Enter your last name"
+                    className={inputClasses}
+                  />
+                  {errors.lastName && <p className="text-sm text-red-600 mt-1">{errors.lastName}</p>}
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className={inputClasses}
+                  />
+                  {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Enter your phone number"
+                    className={inputClasses}
+                  />
+                  {errors.phone && <p className="text-sm text-red-600 mt-1">{errors.phone}</p>}
+                </div>
+              </div>
             </Card>
 
             <Card className="p-8 bg-white border-gray-200">
-                <div className="flex justify-between items-center mb-6">
+              <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">2. Paper Details</h2>
-                <Button 
+                <Button
                   onClick={() => setPaperItems(prev => [...prev, {
                     id: String(prev.length + 1),
                     paperFormat: "Chicago",
@@ -483,7 +491,7 @@ export default function CheckoutPage() {
                       )}
                     </div>
                   </div>
-                  
+
 
                   {/* Subject */}
                   <div className="mb-6">
@@ -552,8 +560,8 @@ export default function CheckoutPage() {
                       <div>
                         <span className="font-semibold text-gray-700">Browse...</span>
                         <span className="text-gray-500 ml-2">
-                          {item.uploadedFiles.length 
-                            ? `${item.uploadedFiles.length} file(s) selected` 
+                          {item.uploadedFiles.length
+                            ? `${item.uploadedFiles.length} file(s) selected`
                             : "No files selected."}
                         </span>
                       </div>
@@ -563,7 +571,7 @@ export default function CheckoutPage() {
                           const files = e.target.files;
                           if (files) {
                             setPaperItems(prev => prev.map(p =>
-                              p.id === item.id 
+                              p.id === item.id
                                 ? { ...p, uploadedFiles: [...p.uploadedFiles, ...Array.from(files)] }
                                 : p
                             ))
@@ -581,7 +589,7 @@ export default function CheckoutPage() {
                             <span className="text-sm text-gray-600">{file.name}</span>
                             <button
                               onClick={() => setPaperItems(prev => prev.map(p =>
-                                p.id === item.id 
+                                p.id === item.id
                                   ? { ...p, uploadedFiles: p.uploadedFiles.filter((_, i) => i !== fileIndex) }
                                   : p
                               ))}
@@ -741,11 +749,10 @@ export default function CheckoutPage() {
                     setSubmittingOrder(false)
                   }
                 }}
-                className={`w-full py-3 text-lg font-semibold transition-all ${
-                  agreedToTerms
-                    ? "bg-red-600 hover:bg-red-700 text-white"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
+                className={`w-full py-3 text-lg font-semibold transition-all ${agreedToTerms
+                  ? "bg-red-600 hover:bg-red-700 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
               >
                 <span className="flex items-center justify-center gap-3">
                   {submittingOrder ? <span className="ee-loader" aria-hidden="true" /> : <Lock size={20} />}
@@ -814,6 +821,22 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+
+      {/* Minimal Footer */}
+      <footer className="bg-white border-t border-gray-200 py-8 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-sm text-gray-500">
+              © 2025 Eccentric Essays. All rights reserved.
+            </div>
+            <div className="flex items-center gap-6 text-sm text-gray-500">
+              <Link href="/terms" className="hover:text-red-600 transition">Terms & Conditions</Link>
+              <Link href="/privacy" className="hover:text-red-600 transition">Privacy Policy</Link>
+              <Link href="/#contact" className="hover:text-red-600 transition">Contact Us</Link>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
