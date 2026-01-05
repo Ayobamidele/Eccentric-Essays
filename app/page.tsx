@@ -28,6 +28,7 @@ import { Card } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { LazyRender } from "@/components/lazy-render"
 
+// Constants moved to top for better scope management
 const SERVICES = [
   {
     title: "Essay Writing",
@@ -603,6 +604,7 @@ export default function Home() {
           </div>
         </section>
       </LazyRender>
+
       {/* Testimonials Section */}
       <LazyRender placeholderClassName="min-h-[520px]">
         <section className="py-20 bg-white">
@@ -653,7 +655,7 @@ export default function Home() {
         </section>
       </LazyRender>
 
-      {/* How It Works - Updated with new process */}
+      {/* How It Works */}
       <LazyRender placeholderClassName="min-h-[520px]">
         <section className="py-20 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -667,14 +669,12 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-              {/* Timeline line for desktop */}
               <div className="hidden md:block absolute top-24 left-0 right-0 h-1 bg-linear-to-r from-red-400 via-red-400 to-red-400 -z-10"></div>
 
               {HOW_IT_WORKS_STEPS.map((step, idx) => {
                 const Icon = step.icon
                 return (
                   <div key={idx} className="relative">
-                    {/* Step number badge */}
                     <div className="flex justify-center mb-6">
                       <div
                         className={`w-20 h-20 rounded-full bg-linear-to-br ${step.color} flex items-center justify-center text-white font-bold text-2xl shadow-lg relative z-10`}
@@ -683,7 +683,6 @@ export default function Home() {
                       </div>
                     </div>
 
-                    {/* Step card */}
                     <Card className="p-8 bg-white border-0 shadow-lg rounded-2xl text-center h-full">
                       <div className="flex justify-center mb-4">
                         <div className="p-4 bg-red-50 rounded-full">
@@ -705,12 +704,11 @@ export default function Home() {
         </section>
       </LazyRender>
 
-      {/* CTA Section - Redesigned */}
+      {/* CTA Section */}
       <LazyRender placeholderClassName="min-h-[420px]">
         <section className="py-20 bg-linear-to-br from-red-600 to-red-700 text-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-              {/* Left: Headline + benefits */}
               <div className="md:col-span-7 text-center md:text-left">
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4">Stop stressing. Start submitting.</h2>
                 <p className="text-sm md:text-base text-red-100 max-w-2xl mb-6">
@@ -742,7 +740,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Right: Card with short bullets and testimonial */}
               <div className="md:col-span-5">
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 text-white border border-white/10">
                   <h3 className="text-lg font-bold mb-3">Fast & reliable — how it works</h3>
@@ -791,7 +788,6 @@ export default function Home() {
         <section className="py-20 bg-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-2 gap-12 items-start">
-              {/* Left Side - Contact Info */}
               <div>
                 <h2 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900 leading-tight">
                   Get in <span className="text-primary-foreground">—</span>
@@ -827,7 +823,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Right Side - Contact Form */}
               <div className="bg-white rounded-2xl p-8 shadow-lg">
                 <form className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
@@ -881,20 +876,16 @@ export default function Home() {
         </section>
       </LazyRender>
 
-      {/* Footer */}
       <LazyRender placeholderClassName="min-h-[360px]">
         <footer className="bg-white border-t border-gray-200 py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mb-12">
-              {/* Brand Column */}
               <div>
                 <a href="/" className="inline-block mb-4 hover:opacity-80 transition">
                   <img src="/eccentric-essays-logo.png" alt="Eccentric Essays" />
                 </a>
-
               </div>
 
-              {/* Services Column (wider) */}
               <div className="md:col-span-3">
                 <h4 className="text-gray-900 font-semibold mb-6">Services</h4>
                 <ul className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm md:text-base text-gray-600">
@@ -908,7 +899,6 @@ export default function Home() {
                 </ul>
               </div>
 
-              {/* Company Column */}
               <div>
                 <h4 className="text-gray-900 font-semibold mb-6">Company</h4>
                 <ul className="space-y-3 text-sm md:text-base text-gray-600">
@@ -930,7 +920,6 @@ export default function Home() {
                 </ul>
               </div>
 
-              {/* Social Media Column */}
               <div>
                 <h4 className="text-gray-900 font-semibold mb-6">Social Media</h4>
                 <div className="flex gap-4">
@@ -960,7 +949,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Copyright */}
             <div className="border-t border-gray-200 pt-8 text-center text-sm text-gray-600">
               <p>&copy; 2025 Eccentric Essays. All rights reserved.</p>
             </div>
