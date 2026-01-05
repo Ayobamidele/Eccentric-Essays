@@ -194,6 +194,7 @@
   }
 
   .numeric-input {
+    appearance: none;
     -webkit-appearance: none;
     -moz-appearance: textfield;
   }
@@ -236,10 +237,38 @@
   }
 
   .animate-infinite-scroll {
-    animation: infinite-scroll 10s linear infinite;
+    animation: infinite-scroll 5s linear infinite;
+    will-change: transform;
   }
 
   .animate-infinite-scroll:hover {
     animation-play-state: paused;
+  }
+
+  /* Hide number input spinners */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  /* Hide native date picker icon to use custom one */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+    opacity: 0;
   }
 }

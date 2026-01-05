@@ -523,14 +523,14 @@ export default function Home() {
                       <label htmlFor="deadline" className="block text-[10px] md:text-sm font-medium mb-1 md:mb-2">
                         Deadline
                       </label>
-                      <div className="relative">
-                        <Calendar className="absolute left-2 top-2 md:left-3 md:top-3.5 text-gray-400" size={12} />
+                      <div className="relative flex items-center">
+                        <Calendar className="absolute left-2.5 md:left-3 text-gray-400 pointer-events-none" size={18} />
                         <input
                           id="deadline"
                           type="date"
                           value={selectedDate}
                           onChange={(e) => setSelectedDate(e.target.value)}
-                          className="w-full border border-gray-300 rounded-lg px-2 md:px-4 py-1.5 md:py-3 pl-7 md:pl-10 text-xs md:text-base focus:outline-none focus:ring-2 focus:ring-red-600"
+                          className="w-full border border-gray-300 rounded-lg px-2 md:px-4 py-1.5 md:py-3 pl-9 md:pl-11 text-xs md:text-base focus:outline-none focus:ring-2 focus:ring-red-600"
                         />
                       </div>
                     </div>
@@ -589,11 +589,11 @@ export default function Home() {
                   return (
                     <div key={idx} className="flex-none w-[300px] px-4">
                       <Card
-                        className="p-6 rounded-2xl transition-all duration-300 cursor-pointer flex flex-col bg-red-50 text-gray-900 border-red-200 hover:border-red-400 hover:shadow-lg h-80 w-full"
+                        className="p-8 bg-red-50 border-red-200 hover:shadow-lg transition h-full w-full"
                       >
-                        <Icon className="w-12 h-12 mb-4 text-red-600 shrink-0" />
-                        <h3 className="text-lg font-bold mb-3 text-gray-900 line-clamp-2">{service.title}</h3>
-                        <p className="text-sm grow text-gray-600 line-clamp-2">{service.description}</p>
+                        <Icon className="text-red-600 mb-4" size={32} />
+                        <h3 className="text-xl font-bold mb-3 text-gray-900">{service.title}</h3>
+                        <p className="text-gray-600 text-sm">{service.description}</p>
                       </Card>
                     </div>
                   )
@@ -806,11 +806,19 @@ export default function Home() {
                 <div className="space-y-6 mb-8">
                   <div>
                     <p className="text-gray-600 font-semibold mb-2">Email:</p>
-                    <p className="text-gray-900 font-bold text-lg">kossyakabogu0007@gmail.com</p>
+                    <p className="text-gray-900 font-bold text-lg">
+                      <a href="mailto:kossyakabogu0007@gmail.com" className="hover:text-red-600 transition">
+                        kossyakabogu0007@gmail.com
+                      </a>
+                    </p>
                   </div>
                   <div>
                     <p className="text-gray-600 font-semibold mb-2">Phone:</p>
-                    <p className="text-gray-900 font-bold text-lg">+1 234 567 78</p>
+                    <p className="text-gray-900 font-bold text-lg">
+                      <a href="tel:+2349060109353" className="hover:text-red-600 transition">
+                        +234 906 010 9353
+                      </a>
+                    </p>
                   </div>
                   <div>
                     <p className="text-gray-600 font-semibold mb-2">Available:</p>
