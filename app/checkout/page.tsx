@@ -359,9 +359,9 @@ export default function CheckoutPage() {
                       {index > 0 && (
                         <button
                           onClick={() => setPaperItems(prev => prev.filter(p => p.id !== item.id))}
-                          className="text-red-600 hover:text-red-700 text-sm font-semibold"
+                          className="text-gray-400 hover:text-red-600 transition-colors text-sm font-medium"
                         >
-                          Remove
+                          Remove Paper
                         </button>
                       )}
                     </div>
@@ -593,7 +593,7 @@ export default function CheckoutPage() {
                                   ? { ...p, uploadedFiles: p.uploadedFiles.filter((_, i) => i !== fileIndex) }
                                   : p
                               ))}
-                              className="text-red-600 hover:text-red-700"
+                              className="text-gray-400 hover:text-red-600 transition-colors text-xs font-medium"
                             >
                               Remove
                             </button>
