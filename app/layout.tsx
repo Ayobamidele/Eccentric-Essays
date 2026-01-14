@@ -39,9 +39,18 @@ export default function RootLayout({
           {children}
           <Analytics />
         </Providers>
-        <Script id="tawk-to" strategy="afterInteractive">
+        <Script id="tawk-to" strategy="lazyOnload">
           {`
             var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+            
+            // Suppress Tawk.to internal errors that cause "Unhandled Runtime Error"
+            window.addEventListener('error', function(e) {
+              if (e.message && (e.message.includes('tawk.to') || e.filename && e.filename.includes('tawk.to'))) {
+                e.stopImmediatePropagation();
+                e.preventDefault();
+              }
+            }, true);
+
             (function () {
               var s1 = document.createElement("script"),
                 s0 = document.getElementsByTagName("script")[0];

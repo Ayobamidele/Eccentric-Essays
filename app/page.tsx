@@ -584,7 +584,7 @@ export default function Home() {
             </div>
 
             <div className="relative overflow-hidden py-10">
-              <div className="flex animate-infinite-scroll hover:pause">
+              <div className="flex w-max animate-infinite-scroll hover:pause">
                 {[...SERVICES, ...SERVICES].map((service, idx) => {
                   const Icon = service.icon
                   return (
@@ -790,7 +790,7 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-12 items-start">
               <div>
                 <h2 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900 leading-tight">
-                  Get in <span className="text-primary-foreground">—</span>
+                  Get in <span className="text-red-600">—</span>
                   <br />
                   touch with us
                 </h2>
