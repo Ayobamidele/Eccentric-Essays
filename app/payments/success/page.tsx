@@ -74,7 +74,7 @@ export default function PaymentSuccessPage() {
 
             <div className="pt-4">
               <a href="mailto:kossyakabogu0007@gmail.com?subject=Order Issue Report" className="block w-full">
-                <Button variant="outline" className="w-full py-6 text-lg font-semibold">
+                <Button className="w-full py-6 text-lg font-semibold bg-red-600 hover:bg-red-700 text-white transition-colors">
                   Report an Issue
                 </Button>
               </a>
